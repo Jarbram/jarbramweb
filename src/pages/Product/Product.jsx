@@ -119,26 +119,39 @@ const QuotesSection = styled.div`
 const QuotesSlider = styled(motion.div)`
   position: relative;
   width: 100%;
-  height: 150px;
-  overflow: hidden;
+  height: 80px;
   margin: 2rem auto;
   
   @media (max-width: 768px) {
-    height: 200px;
+    height: 120px;
   }
 `;
 
-const QuoteItem = styled(motion.blockquote)`
+const QuoteItem = styled(motion.div)`
   position: absolute;
   width: 100%;
-  text-align: center;
-  font-size: 1.5rem;
-  font-style: italic;
-  color: #888;
+  text-align: left;
+  font-size: 1.2rem;
+  font-family: 'Courier New', monospace;
+  color: #4A90E2;
   padding: 0 2rem;
   
+  &::before {
+    content: '> ';
+    color: #45B7D1;
+  }
+  
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.2em;
+    background-color: #45B7D1;
+    margin-left: 2px;
+    vertical-align: middle;
+  }
+  
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `;
 
@@ -212,21 +225,44 @@ const StatItem = styled(motion.li)`
 
 const Product = () => {
   const [currentQuote, setCurrentQuote] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
   
   const quotes = [
+    // Famous product quotes
     "The best product isn't the prettiest, but the one that solves real problems – Eric Ries",
     "Fall in love with the problem, not the solution – Steve Blank",
     "If you're not embarrassed by your first MVP, you launched too late – Reid Hoffman",
     "Make things people want > Want people to make things – Paul Graham",
-    "The best way to predict the future is to create it – Peter Drucker"
+    "The best way to predict the future is to create it – Peter Drucker",
+    // Fun product quotes
+    "\"Product Market Fit\" is just fancy talk for \"People actually want this stuff\" 😅",
+    "MVP: Minimum Viable Product or Most Valuable Player? Why not both! 🏆",
+    "A product manager's best friend? Coffee and user feedback ☕️",
+    "Agile is like pizza - even when it's bad, it's still pretty good 🍕",
+    "User stories are like bedtime stories, but with more JIRA tickets 📚"
   ];
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % quotes.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [quotes.length]);
+    let index = 0;
+    const text = quotes[currentQuote];
+    setDisplayedText('');
+    
+    const typing = setInterval(() => {
+      setDisplayedText(prev => prev + text.charAt(index));
+      index++;
+      
+      if (index === text.length) {
+        clearInterval(typing);
+        setTimeout(() => {
+          setCurrentQuote((prev) => (prev + 1) % quotes.length);
+        }, 3000);
+      }
+    }, 35);
+
+    return () => {
+      clearInterval(typing);
+    };
+  }, [currentQuote]);
 
   return (
     <ProductSection>
@@ -258,40 +294,39 @@ const Product = () => {
           What got you interested in digital products? 🤔
         </ChatMessage>
         <ChatMessage isUser>
-          I've been reading a lot about Lean Startup and other methodologies. There's so much fascinating theory! 📚
+          I've been reading about product development and startups. There's so much to learn! 📚
         </ChatMessage>
         <ChatMessage>
-          Theory is great! But you know what's better? Learning by doing. As they say: "If you're going to talk product, build product" 💡
+          Theory is great! But the real magic happens when you start building. Want to hear about my journey? 💡
         </ChatMessage>
         <ChatMessage isUser>
-          Exactly! But how do I start? I feel overwhelmed with all this information...
+          Absolutely! How did you get started?
         </ChatMessage>
         <ChatMessage>
-          Let me share my experience: I started with a simple idea solving a real problem. That's how DJPONLA was born 🎵 The key is to start and learn along the way.
+          My co-founder and I started DJPONLA at a startup incubator 🎵 We identified a real problem in the party scene and decided to solve it together!
         </ChatMessage>
         <ChatMessage isUser>
-          Love that approach! How was your process?
+          That's interesting! How did you develop it?
         </ChatMessage>
         <ChatMessage>
-          Exploration, lots of exploration 🔍 Understanding the niche, talking to users, identifying needs... And the best part: watching the product grow with each iteration ✨
+          Through collaboration and constant user feedback 🔍 We explored the market, talked to DJs and partygoers, and kept improving with each iteration ✨
         </ChatMessage>
       </ChatContainer>
 
       <QuotesSection>
         <QuotesSlider>
-          {quotes.map((quote, index) => (
-            <QuoteItem
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ 
-                opacity: currentQuote === index ? 1 : 0,
-                y: currentQuote === index ? 0 : 50
+          <QuoteItem>
+            {displayedText}
+            <motion.span 
+              className="cursor"
+              animate={{ opacity: [1, 0] }}
+              transition={{ 
+                duration: 0.8,
+                repeat: Infinity,
+                ease: "linear"
               }}
-              transition={{ duration: 0.5 }}
-            >
-              {quote}
-            </QuoteItem>
-          ))}
+            />
+          </QuoteItem>
         </QuotesSlider>
       </QuotesSection>
 
@@ -339,20 +374,20 @@ const Product = () => {
             Real Stories, Real Impact 🚀
           </h2>
           <p style={{ color: '#888', marginBottom: '2rem' }}>
-            From startup incubators to launching DJPONLA, here's what I've learned:
+            From startup incubation to co-founding DJPONLA, here's what we've learned:
           </p>
           <StatsList>
             <StatItem>
-              1000+ conversations with users that shaped amazing products ☕️
+              1000+ user interviews that shaped our products ☕️
             </StatItem>
             <StatItem>
-              3 pivots that turned challenges into opportunities 🔄
+              3 pivots that transformed challenges into opportunities 🔄
             </StatItem>
             <StatItem>
-              100+ features tested, 20% kept (that's product life!) 🎯
+              100+ features tested, 20% implemented (that's product life!) 🎯
             </StatItem>
             <StatItem>
-              1 simple rule: Users first, code second, ego last 💫
+              1 golden rule: Users first, code second, ego last 💫
             </StatItem>
           </StatsList>
 

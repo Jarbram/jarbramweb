@@ -246,7 +246,6 @@ const Footer = () => {
             </GameStats>
           )}
         </GameButton>
-        <Info>Diseñado & Desarrollado con ♥</Info>
       </Column>
 
       <TicTacToe show={showGame} onGameEnd={handleGameEnd} />

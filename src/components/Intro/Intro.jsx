@@ -165,9 +165,54 @@ const ScrollIndicator = styled(motion.div)`
     }
   }
 
+  @media (max-width: 768px) {
+    bottom: 1.5rem;
+    
+    .scroll-icon {
+      width: 24px;
+      height: 40px;
+      
+      &::before {
+        width: 4px;
+        height: 4px;
+        top: 6px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    bottom: 1rem;
+    
+    .scroll-icon {
+      width: 20px;
+      height: 34px;
+      border-width: 1.5px;
+      
+      &::before {
+        width: 3px;
+        height: 3px;
+        top: 5px;
+      }
+    }
+  }
+
   @keyframes scrollAnim {
     0% { top: 8px; opacity: 1; }
     100% { top: 32px; opacity: 0; }
+  }
+
+  @media (max-width: 768px) {
+    @keyframes scrollAnim {
+      0% { top: 6px; opacity: 1; }
+      100% { top: 26px; opacity: 0; }
+    }
+  }
+
+  @media (max-width: 480px) {
+    @keyframes scrollAnim {
+      0% { top: 5px; opacity: 1; }
+      100% { top: 22px; opacity: 0; }
+    }
   }
 `;
 

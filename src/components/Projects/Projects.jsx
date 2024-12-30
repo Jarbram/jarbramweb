@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Header from '../Header/Header';
+import { NavLink } from 'react-router-dom';
 
 const ProjectsSection = styled.section`
   background: var(--background);
@@ -364,7 +365,7 @@ const TextRow = styled.div`
   }
 `;
 
-const ActionButton = styled.a`
+const ActionButton = styled(NavLink)`
   background-color: ${props => props.bgColor || '#4A90E2'};
   padding: 0.2rem 0.5rem;
   border-radius: ${props => props.isLeft ? '12px 6px 12px 6px' : '6px 12px 6px 12px'};
@@ -434,7 +435,7 @@ const ProgressDot = styled.div`
 `;
 
 const Projects = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlides, setCurrentSlides] = useState({});
   const [touchStart, setTouchStart] = useState(0);
   
   const projects = [
@@ -492,34 +493,47 @@ const Projects = () => {
     // Agrega más proyectos aquí
   ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => 
-      prev === projects[0].images.length - 1 ? 0 : prev + 1
-    );
+  const nextSlide = (projectId) => {
+    setCurrentSlides(prev => ({
+      ...prev,
+      [projectId]: (prev[projectId] + 1) % projects.find(p => p.id === projectId).images.length
+    }));
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => 
-      prev === 0 ? projects[0].images.length - 1 : prev - 1
-    );
+  const prevSlide = (projectId) => {
+    setCurrentSlides(prev => ({
+      ...prev,
+      [projectId]: prev[projectId] === 0 
+        ? projects.find(p => p.id === projectId).images.length - 1 
+        : prev[projectId] - 1
+    }));
   };
 
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = (e, projectId) => {
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStart - touchEnd;
 
-    if (Math.abs(diff) > 50) { // umbral mínimo para swipe
+    if (Math.abs(diff) > 50) {
       if (diff > 0) {
-        nextSlide();
+        nextSlide(projectId);
       } else {
-        prevSlide();
+        prevSlide(projectId);
       }
     }
   };
+
+  // Inicializar currentSlides para cada proyecto
+  useState(() => {
+    const initialSlides = {};
+    projects.forEach(project => {
+      initialSlides[project.id] = 0;
+    });
+    setCurrentSlides(initialSlides);
+  }, []);
 
   return (
     <ProjectsSection id="projects">
@@ -570,10 +584,10 @@ const Projects = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 }}
                 onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
+                onTouchEnd={(e) => handleTouchEnd(e, project.id)}
               >
                 <SliderImage
-                  src={project.images[currentSlide]}
+                  src={project.images[currentSlides[project.id] || 0]}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -582,15 +596,15 @@ const Projects = () => {
                   {project.images.map((_, index) => (
                     <ProgressDot 
                       key={index} 
-                      active={currentSlide === index} 
+                      active={currentSlides[project.id] === index} 
                     />
                   ))}
                 </SliderProgress>
                 <SliderButtons>
-                  <SliderButton onClick={prevSlide}>
+                  <SliderButton onClick={() => prevSlide(project.id)}>
                     <ArrowLeft />
                   </SliderButton>
-                  <SliderButton onClick={nextSlide}>
+                  <SliderButton onClick={() => nextSlide(project.id)}>
                     <ArrowRight />
                   </SliderButton>
                 </SliderButtons>
@@ -632,7 +646,7 @@ const Projects = () => {
           <TextRow>
             <span>CHECK ON</span>
             <ActionButton 
-              href="/product" 
+              to="/product" 
               bgColor="#00D26A"
               isLeft
             >
@@ -640,7 +654,7 @@ const Projects = () => {
             </ActionButton>
             <span>OR</span>
             <ActionButton 
-              href="/fullstack" 
+              to="/code" 
               bgColor="#0095FF"
             >
               <ArrowRight /> Fullstack Developer
