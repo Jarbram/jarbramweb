@@ -11,6 +11,30 @@ const IntroSection = styled.section`
   position: relative;
   padding: 1rem;
   text-align: center;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(
+        to top,
+        rgba(19, 19, 19, 0.3),
+        transparent
+      );
+      pointer-events: none;
+      animation: fadeInOut 2s infinite;
+    }
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
 `;
 
 const TextContainer = styled.div`
@@ -143,6 +167,12 @@ const ScrollIndicator = styled(motion.div)`
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  
+  &:hover {
+    opacity: 1;
+  }
   
   .scroll-icon {
     width: 30px;
@@ -163,55 +193,33 @@ const ScrollIndicator = styled(motion.div)`
       border-radius: 50%;
       animation: scrollAnim 2s infinite;
     }
-  }
 
-  @media (max-width: 768px) {
-    bottom: 1.5rem;
-    
-    .scroll-icon {
-      width: 24px;
-      height: 40px;
-      
-      &::before {
-        width: 4px;
-        height: 4px;
-        top: 6px;
-      }
-    }
-  }
-
-  @media (max-width: 480px) {
-    bottom: 1rem;
-    
-    .scroll-icon {
-      width: 20px;
-      height: 34px;
-      border-width: 1.5px;
-      
-      &::before {
-        width: 3px;
-        height: 3px;
-        top: 5px;
-      }
+    &::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 10px;
+      background: rgba(253, 251, 251, 0.3);
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 8px;
+      border-radius: 2px;
     }
   }
 
   @keyframes scrollAnim {
-    0% { top: 8px; opacity: 1; }
-    100% { top: 32px; opacity: 0; }
-  }
-
-  @media (max-width: 768px) {
-    @keyframes scrollAnim {
-      0% { top: 6px; opacity: 1; }
-      100% { top: 26px; opacity: 0; }
+    0% { 
+      top: 8px; 
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
     }
-  }
-
-  @media (max-width: 480px) {
-    @keyframes scrollAnim {
-      0% { top: 5px; opacity: 1; }
-      100% { top: 22px; opacity: 0; }
+    50% {
+      transform: translateX(-50%) scale(1.2);
+    }
+    100% { 
+      top: 32px; 
+      opacity: 0;
+      transform: translateX(-50%) scale(1);
     }
   }
 `;

@@ -27,6 +27,11 @@ const ProjectsSection = styled.section`
 
 const ProjectsContent = styled.div`
   position: relative;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    padding: 0 2rem;
+  }
 `;
 
 const Title = styled.h2`
@@ -80,6 +85,11 @@ const ChatContainer = styled.div`
   gap: 2rem;
   max-width: 650px;
   margin: 0 auto;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    padding: 0;
+  }
 `;
 
 const ProjectCard = styled(motion.div)`
@@ -344,9 +354,11 @@ const FinalText = styled.h6`
   text-align: center;
   line-height: 1;
   letter-spacing: 0.02em;
+  padding: 0 1rem;
   
   @media (max-width: 768px) {
     font-size: 1.5rem;
+    padding: 0;
   }
 `;
 
@@ -434,9 +446,93 @@ const ProgressDot = styled.div`
   transition: all 0.3s ease;
 `;
 
+const ExpandButton = styled(SliderButton)`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+`;
+
+const Modal = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+`;
+
+const ModalImage = styled(motion.img)`
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 15px;
+`;
+
+const CloseButton = styled(SliderButton)`
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1001;
+`;
+
+const ExpandIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 3H21M21 3V9M21 3L14 10M9 21H3M3 21V15M3 21L10 14" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 6L6 18M6 6L18 18" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const ModalNavButton = styled(SliderButton)`
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+  
+  &.prev {
+    left: 2rem;
+  }
+  
+  &.next {
+    right: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    &.prev {
+      left: 1rem;
+    }
+    
+    &.next {
+      right: 1rem;
+    }
+  }
+`;
+
 const Projects = () => {
   const [currentSlides, setCurrentSlides] = useState({});
   const [touchStart, setTouchStart] = useState(0);
+  const [expandedImage, setExpandedImage] = useState(null);
+  const [expandedProjectId, setExpandedProjectId] = useState(null);
   
   const projects = [
     {
@@ -535,6 +631,27 @@ const Projects = () => {
     setCurrentSlides(initialSlides);
   }, []);
 
+  const handleExpandImage = (projectId, imageIndex) => {
+    setExpandedProjectId(projectId);
+    setExpandedImage(projects.find(p => p.id === projectId).images[imageIndex]);
+  };
+
+  const handleModalNavigation = (direction) => {
+    if (!expandedProjectId) return;
+    
+    const project = projects.find(p => p.id === expandedProjectId);
+    const currentIndex = project.images.indexOf(expandedImage);
+    let newIndex;
+    
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % project.images.length;
+    } else {
+      newIndex = currentIndex === 0 ? project.images.length - 1 : currentIndex - 1;
+    }
+    
+    setExpandedImage(project.images[newIndex]);
+  };
+
   return (
     <ProjectsSection id="projects">
       <Header />
@@ -592,6 +709,9 @@ const Projects = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 />
+                <ExpandButton onClick={() => handleExpandImage(project.id, currentSlides[project.id] || 0)}>
+                  <ExpandIcon />
+                </ExpandButton>
                 <SliderProgress>
                   {project.images.map((_, index) => (
                     <ProgressDot 
@@ -641,7 +761,6 @@ const Projects = () => {
         <FinalSection>
           <FinalText>
             HUNGRY FOR MORE? 
-            <span> Don't worry, there's plenty more to discover!</span>
           </FinalText>
           <TextRow>
             <span>CHECK ON</span>
@@ -650,18 +769,61 @@ const Projects = () => {
               bgColor="#00D26A"
               isLeft
             >
-              <ArrowLeft /> Product Manager
+              <ArrowRight /> Product 
             </ActionButton>
             <span>OR</span>
             <ActionButton 
               to="/code" 
               bgColor="#0095FF"
             >
-              <ArrowRight /> Fullstack Developer
+              <ArrowRight /> Code
             </ActionButton>
           </TextRow>
         </FinalSection>
       </ProjectsContent>
+      {expandedImage && (
+        <Modal
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => {
+            setExpandedImage(null);
+            setExpandedProjectId(null);
+          }}
+        >
+          <ModalImage
+            src={expandedImage}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <CloseButton onClick={() => {
+            setExpandedImage(null);
+            setExpandedProjectId(null);
+          }}>
+            <CloseIcon />
+          </CloseButton>
+          <ModalNavButton 
+            className="prev" 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleModalNavigation('prev');
+            }}
+          >
+            <ArrowLeft />
+          </ModalNavButton>
+          <ModalNavButton 
+            className="next" 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleModalNavigation('next');
+            }}
+          >
+            <ArrowRight />
+          </ModalNavButton>
+        </Modal>
+      )}
     </ProjectsSection>
   );
 };
