@@ -269,8 +269,10 @@ const Product = () => {
   }, [currentQuote]);
 
   return (
+    <>
+    <Header />
     <ProductSection>
-      <Header />
+      
       
       <HeroSection>
         <Title
@@ -409,6 +411,7 @@ const Product = () => {
 
       <Footer />
     </ProductSection>
+    </>
   );
 };
 

@@ -351,8 +351,9 @@ const Code = () => {
   }, [currentQuote]);
 
   return (
+    <>
+    <Header />
     <ProductSection>
-      <Header />
       
       <HeroSection>
         <Title
@@ -526,6 +527,7 @@ const Code = () => {
 
       <Footer />
     </ProductSection>
+    </>
   );
 };
 

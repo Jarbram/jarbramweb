@@ -202,8 +202,9 @@ const TechRecruiter = () => {
   }, [currentQuote]);
 
   return (
+    <>
+    <Header />
     <ProductSection>
-      <Header />
       
       <HeroSection>
         <Title
@@ -283,6 +284,7 @@ const TechRecruiter = () => {
 
       <Footer />
     </ProductSection>
+    </>
   );
 };
 
