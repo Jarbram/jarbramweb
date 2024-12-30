@@ -30,10 +30,12 @@ const ContentContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   padding-top: 4rem;
+  padding: 4rem 1rem;
 
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 2rem 1rem;
   }
 `;
 

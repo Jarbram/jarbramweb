@@ -6,8 +6,12 @@ import { useState, useEffect } from 'react';
 
 const ProductSection = styled.section`
   background: var(--background);
-  padding: 0;
+  padding: 0 1rem;
   min-height: 100vh;
+  
+  @media (max-width: 768px) {
+    padding: 0 1.5rem;
+  }
 `;
 
 const HeroSection = styled.div`
@@ -131,7 +135,7 @@ const QuoteItem = styled(motion.div)`
   position: absolute;
   width: 100%;
   text-align: left;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-family: 'Courier New', monospace;
   color: #4A90E2;
   padding: 0 2rem;
@@ -161,7 +165,7 @@ const MethodologySection = styled.div`
   gap: 3rem;
   max-width: 1200px;
   margin: 0 auto 4rem;
-  padding: 0 2rem;
+  padding: 0;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
@@ -248,10 +252,10 @@ const Product = () => {
     setDisplayedText('');
     
     const typing = setInterval(() => {
-      setDisplayedText(prev => prev + text.charAt(index));
+      setDisplayedText(text.slice(0, index + 1));
       index++;
       
-      if (index === text.length) {
+      if (index >= text.length) {
         clearInterval(typing);
         setTimeout(() => {
           setCurrentQuote((prev) => (prev + 1) % quotes.length);

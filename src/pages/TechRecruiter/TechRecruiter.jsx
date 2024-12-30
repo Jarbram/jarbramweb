@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 
 const ProductSection = styled.section`
   background: var(--background);
-  padding: 0;
   min-height: 100vh;
+  padding: 0 1rem;
 `;
 
 const HeroSection = styled.div`
@@ -133,7 +133,7 @@ const QuoteItem = styled(motion.div)`
   position: absolute;
   width: 100%;
   text-align: left;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-family: 'Courier New', monospace;
   color: rgb(25, 230, 168);
   padding: 0 2rem;
@@ -153,7 +153,8 @@ const QuoteItem = styled(motion.div)`
   }
   
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
+    padding: 0 1rem;
   }
 `;
 
@@ -184,10 +185,10 @@ const TechRecruiter = () => {
     setDisplayedText('');
     
     const typing = setInterval(() => {
-      setDisplayedText(prev => prev + text.charAt(index));
+      setDisplayedText(text.slice(0, index + 1));
       index++;
       
-      if (index === text.length) {
+      if (index >= text.length) {
         clearInterval(typing);
         setTimeout(() => {
           setCurrentQuote((prev) => (prev + 1) % quotes.length);

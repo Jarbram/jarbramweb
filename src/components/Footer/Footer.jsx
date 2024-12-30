@@ -52,6 +52,10 @@ const Year = styled.div`
       margin: 6px auto 0;
     }
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const Info = styled.div`
@@ -61,6 +65,10 @@ const Info = styled.div`
 
   &:hover {
     color: white;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
   }
 `;
 
@@ -86,6 +94,10 @@ const SocialLink = styled.a`
     transition: all 0.2s ease;
     position: absolute;
     left: -12px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
   }
 `;
 
@@ -130,6 +142,10 @@ const ConnectTitle = styled.h3`
       margin: 6px auto 0;
     }
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const NavColumn = styled(Column)`
@@ -141,6 +157,10 @@ const NavColumn = styled(Column)`
 const NavLink = styled(SocialLink)`
   font-size: 0.75rem;
   color: #888;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const FooterDivider = styled.div`
@@ -182,6 +202,19 @@ const GameButton = styled(Info)`
   padding: 4px 8px;
   margin-left: -8px;
   transition: all 0.3s ease;
+  animation: ${props => !props.active ? 'pulse 2s infinite' : 'none'};
+  
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
   
   @media (max-width: 768px) {
     margin-left: 0;
@@ -213,6 +246,10 @@ const GameStats = styled.span`
   
   ${GameButton}:hover & {
     color: #50fa7b;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
 `;
 
