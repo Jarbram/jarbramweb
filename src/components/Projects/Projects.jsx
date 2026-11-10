@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { reveal, hoverLift, ease } from '../../styles/motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import { NavLink } from 'react-router-dom';
 
@@ -204,6 +204,10 @@ const SliderWrap = styled(motion.div)`
     content: '';
     display: block;
     padding-bottom: 56.25%;
+
+    @media (max-width: 768px) {
+      padding-bottom: 160%;
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -402,6 +406,7 @@ const IconClose = () => (
 /* ── Card animation variants ── */
 
 const cardVariants = reveal;
+const MOBILE = '(max-width: 768px)';
 
 /* ── Component ── */
 
@@ -410,6 +415,14 @@ const Projects = () => {
   const [touchStart, setTouchStart]       = useState(0);
   const [expandedImage, setExpandedImage] = useState(null);
   const [expandedProjectId, setExpandedProjectId] = useState(null);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE).matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   const projects = [
     {
@@ -420,7 +433,10 @@ const Projects = () => {
         { type: "AI OPS",     label: "AI OPS" },
         { type: "AUTOMATION", label: "AUTOMATION" },
       ],
-      images: ["/subastop-1.webp","/subastop-2.webp","/subastop-3.webp","/subastop-4.webp","/subastop-5.webp","/subastop-6.webp"],
+      images: {
+        d: ["/subastop-d1.webp","/subastop-d2.webp","/subastop-d3.webp","/subastop-d4.webp","/subastop-d5.webp","/subastop-d6.webp"],
+        m: ["/subastop-m1.webp","/subastop-m2.webp","/subastop-m3.webp","/subastop-m4.webp","/subastop-m5.webp","/subastop-m6.webp"],
+      },
       description: "VMC sells cars at auction across Peru. Support, content and tooling all had to move faster — without a new team for each.",
       response: "I build the AI layer: the new VMC home, Prisma (our video studio), the buyer help center, Subastín and the Concorde design system.",
       additionalResponses: [
@@ -437,7 +453,10 @@ const Projects = () => {
         { type: "HEALTH TECH", label: "HEALTH TECH" },
         { type: "SAAS",        label: "SAAS" },
       ],
-      images: ["/ladraapp-1.webp","/ladraapp-2.webp","/ladraapp-3.webp","/ladraapp-4.webp"],
+      images: {
+        d: ["/ladraapp-d1.webp","/ladraapp-d2.webp","/ladraapp-d3.webp","/ladraapp-d4.webp"],
+        m: ["/ladraapp-m1.webp","/ladraapp-m2.webp","/ladraapp-m3.webp","/ladraapp-m4.webp"],
+      },
       description: "Veterinary clinics in Peru were drowning in paperwork — appointments, clinical histories, prescriptions, all manual. I built the solution.",
       response: "Clinical records you dictate, vaccine reminders ready for WhatsApp, cash and stock — all from your phone.",
       additionalResponses: [
@@ -454,7 +473,10 @@ const Projects = () => {
         { type: "AI",     label: "AI" },
         { type: "CAREER", label: "CAREER" },
       ],
-      images: ["/atlas-1.webp"],
+      images: {
+        d: ["/atlas-d1.webp"],
+        m: ["/atlas-m1.webp"],
+      },
       description: "Job hunting means rewriting the same CV for every role — and AI tools happily invent experience you don't have.",
       response: "Atlas adapts your CV to each job using only what's in your profile. A Chrome extension brings any job post in with one click.",
       additionalResponses: [
@@ -471,7 +493,10 @@ const Projects = () => {
         { type: "ENTERTAINMENT", label: "ENTERTAINMENT" },
         { type: "PRODUCT",       label: "PRODUCT" },
       ],
-      images: ["/project1-1.png","/project1-2.png","/project1-3.png","/project1-4.png","/project1-5.png","/project1-6.png","/project1-7.png"],
+      images: {
+        d: ["/djponla-d1.webp","/djponla-d2.webp","/djponla-d3.webp"],
+        m: ["/project1-1.png","/project1-2.png","/project1-3.png","/project1-4.png","/project1-5.png","/project1-6.png","/project1-7.png"],
+      },
       description: "The platform where partygoers request songs directly to the live DJ — 100+ DJs already running their sets with it.",
       response: "Product, design, and code — all built by me.",
       additionalResponses: [
@@ -481,23 +506,6 @@ const Projects = () => {
       websiteUrl: "https://www.djponla.com",
     },
     {
-      id: 2,
-      title: "Coaching Al Millón",
-      logo: "/CALMILLON.png",
-      tags: [
-        { type: "PERSONAL BRANDING", label: "PERSONAL BRANDING" },
-        { type: "INVESTMENT",        label: "INVESTMENT" },
-      ],
-      images: ["/project2-1.png","/project2-2.png","/project2-3.png","/project2-4.png"],
-      description: "A platform to bring the AGV investment methodology to young people in Peru — from zero to a full brand presence online.",
-      response: "Shipped design and dev faster than they expected.",
-      additionalResponses: [
-        "The speed and quality were unmatched. Abraham always delivers.",
-        "Check it out at www.micaminoalmillon.com",
-      ],
-      websiteUrl: "https://www.micaminoalmillon.com/",
-    },
-    {
       id: 3,
       title: "HUB UDEP",
       logo: "/hubudep_logo.jpeg",
@@ -505,7 +513,10 @@ const Projects = () => {
         { type: "EDUCATION",  label: "EDUCATION" },
         { type: "INVESTMENT", label: "INVESTMENT" },
       ],
-      images: ["/project3-1.png","/project3-2.png","/project3-3.png","/project3-4.png"],
+      images: {
+        d: ["/hubudep-d1.webp","/hubudep-d2.webp","/hubudep-d3.webp"],
+        m: ["/project3-1.png","/project3-2.png","/project3-3.png","/project3-4.png"],
+      },
       description: "UDEP needed a landing page for their angel investor course — built and shipped from scratch in days.",
       response: "Let's get it live.",
       additionalResponses: [
@@ -522,7 +533,10 @@ const Projects = () => {
         { type: "EVENTS",  label: "EVENTS" },
         { type: "PRODUCT", label: "PRODUCT" },
       ],
-      images: ["/sinkarta-1.webp"],
+      images: {
+        d: ["/sinkarta-d1.webp"],
+        m: ["/sinkarta-m1.webp"],
+      },
       description: "Couples wanted invitations as beautiful as paper ones — that guests could actually RSVP to from their phone.",
       response: "Each one designed to measure, with RSVPs and a shared photo gallery in real time. One link, any phone.",
       additionalResponses: [
@@ -539,21 +553,28 @@ const Projects = () => {
         { type: "AGENCY", label: "AGENCY" },
         { type: "WEB",    label: "WEB" },
       ],
-      images: ["/enlace-1.webp","/enlace-2.webp","/enlace-3.webp"],
+      images: {
+        d: ["/enlace-d1.webp"],
+        m: ["/enlace-m1.webp"],
+      },
       description: "The first communications agency in Piura needed a site that showed its full range of services.",
-      response: "Designed and built in Next.js, with a contact form that lands straight in their inbox.",
+      response: "I'm building their new site in Next.js — services, projects and a contact form that lands straight in their inbox.",
       additionalResponses: [
-        "Is it live?",
-        "Visit enlacecomunicacion.pe",
+        "Where can we see the agency today?",
+        "Current site: enlacecomunicacion.pe",
       ],
       websiteUrl: "https://www.enlacecomunicacion.pe",
     },
   ];
 
+  const imgsOf = (projectId) => projects.find(p => p.id === projectId).images[isMobile ? 'm' : 'd'];
+  // ponytail: índice con módulo, sobrevive al cambio desktop↔mobile con distinto nº de imágenes
+  const idxOf = (projectId) => (currentSlides[projectId] || 0) % imgsOf(projectId).length;
+
   const slide = (projectId, dir) => {
-    const len = projects.find(p => p.id === projectId).images.length;
+    const len = imgsOf(projectId).length;
     setCurrentSlides(prev => {
-      const cur = prev[projectId] || 0;
+      const cur = (prev[projectId] || 0) % len;
       return { ...prev, [projectId]: dir === 'next' ? (cur + 1) % len : cur === 0 ? len - 1 : cur - 1 };
     });
   };
@@ -567,12 +588,12 @@ const Projects = () => {
 
   const openModal = (projectId, idx) => {
     setExpandedProjectId(projectId);
-    setExpandedImage(projects.find(p => p.id === projectId).images[idx]);
+    setExpandedImage(imgsOf(projectId)[idx]);
   };
 
   const navigateModal = (dir) => {
     if (!expandedProjectId) return;
-    const imgs = projects.find(p => p.id === expandedProjectId).images;
+    const imgs = imgsOf(expandedProjectId);
     const cur  = imgs.indexOf(expandedImage);
     setExpandedImage(dir === 'next' ? imgs[(cur + 1) % imgs.length] : imgs[cur === 0 ? imgs.length - 1 : cur - 1]);
   };
@@ -615,7 +636,7 @@ const Projects = () => {
               </ChatArea>
 
               {/* Slider */}
-              {project.images.length > 0 && (
+              {imgsOf(project.id).length > 0 && (
                 <SliderWrap
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -626,9 +647,9 @@ const Projects = () => {
                 >
                   <AnimatePresence initial={false}>
                     <SliderImage
-                      key={currentSlides[project.id] || 0}
-                      src={project.images[currentSlides[project.id] || 0]}
-                      alt={`${project.title} — captura ${(currentSlides[project.id] || 0) + 1}`}
+                      key={idxOf(project.id)}
+                      src={imgsOf(project.id)[idxOf(project.id)]}
+                      alt={`${project.title} — captura ${(idxOf(project.id)) + 1}`}
                       loading="lazy"
                       initial={{ opacity: 0, scale: 1.02 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -636,12 +657,12 @@ const Projects = () => {
                       transition={{ duration: 0.45, ease }}
                     />
                   </AnimatePresence>
-                  <ExpandBtn onClick={() => openModal(project.id, currentSlides[project.id] || 0)}>
+                  <ExpandBtn onClick={() => openModal(project.id, idxOf(project.id))}>
                     <IconExpand />
                   </ExpandBtn>
                   <SliderDots>
-                    {project.images.map((_, i) => (
-                      <Dot key={i} $active={( currentSlides[project.id] || 0) === i} />
+                    {imgsOf(project.id).map((_, i) => (
+                      <Dot key={i} $active={( idxOf(project.id)) === i} />
                     ))}
                   </SliderDots>
                   <SliderControls>
