@@ -41,7 +41,7 @@ const GlobalStyles = createGlobalStyle`
     /* Tinta */
     --ink: #fdfbfb;
     --ink-muted: #9a9a9a;
-    --ink-faint: #6b6b6b;
+    --ink-faint: #858585;
 
     /* Marca + un color por sección */
     --accent: #FE4A23;

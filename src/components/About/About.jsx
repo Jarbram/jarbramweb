@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Header from '../Header/Header';
 import { motion } from 'framer-motion';
+import { reveal } from '../../styles/motion';
 
 const pulseGreen = keyframes`
   0%, 100% { box-shadow: 0 0 0 0 rgba(80, 200, 120, 0.5); }
@@ -47,7 +48,7 @@ const ContentContainer = styled.div`
 
 const ChatCard = styled(motion.div)`
   background: var(--surface-1);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--surface-3);
   overflow: hidden;
   display: flex;
@@ -101,7 +102,7 @@ const ChatName = styled.h1`
 
 const ChatRole = styled.p`
   font-size: 0.72rem;
-  color: rgba(255,255,255,0.38);
+  color: var(--ink-faint);
   font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -124,7 +125,7 @@ const MsgMeta = styled.span`
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(255,255,255,0.2);
+  color: var(--ink-faint);
   padding: 0 0.4rem;
   align-self: ${props => props.$right ? 'flex-end' : 'flex-start'};
 `;
@@ -144,7 +145,7 @@ const QuestionBubble = styled.div`
 `;
 
 const AnswerBubble = styled.div`
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  background: var(--accent);
   color: #fff;
   padding: 0.8rem 1.1rem;
   border-radius: 16px;
@@ -189,7 +190,7 @@ const InfoColumn = styled.div`
 
 const InfoCard = styled(motion.div)`
   background: var(--surface-1);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--surface-3);
   padding: 1.4rem;
 `;
@@ -199,7 +200,7 @@ const CardLabel = styled.h3`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
   margin-bottom: 1.1rem;
 `;
 
@@ -267,7 +268,7 @@ const SocialLink = styled(motion.a)`
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 1rem;
-  color: #555;
+  color: var(--ink-muted);
   text-decoration: none;
   background: var(--surface-2);
   border-radius: 12px;
@@ -353,7 +354,7 @@ const About = () => {
     },
     {
       question: "What does your stack look like right now? 🔄",
-      answer: "A mix of AI models, vibe coding tools, and no-code platforms — whatever ships the fastest and solves the problem. I'm always testing what's new and adding it to the arsenal. 🛠️"
+      answer: "Claude Code is my daily pair. Around it: Next.js and Supabase for products, Python and Remotion for automation and video, n8n to glue it all together. Whatever ships fastest and solves the problem. 🛠️"
     },
     {
       question: "How do you approach creating real impact? 💫",
@@ -362,10 +363,12 @@ const About = () => {
   ]);
 
   const roles = [
-    { title: "AI Ops Specialist",      company: "Subastop",    url: null,                       current: true  },
-    { title: "Founder & Developer",    company: "LadraApp",    url: "https://ladraapp.com"                     },
-    { title: "Co-Founder & Developer", company: "DJPONLA",     url: "https://djponla.com"                      },
-    { title: "Talent Acquisition",     company: "TalentCross", url: "https://talentcross.biz"                  },
+    { title: "AI Ops Specialist",      company: "Subastop · VMC", url: "https://www.vmcsubastas.com", current: true },
+    { title: "Founder & Developer",    company: "LadraApp",       url: "https://ladraapp.com",        current: true },
+    { title: "Builder",                company: "Atlas",          url: "https://atlas-web-ten-liard.vercel.app/" },
+    { title: "Founder",                company: "Sinkarta",       url: "https://sinkarta.com"                    },
+    { title: "Co-Founder & Developer", company: "DJPONLA",        url: "https://djponla.com"                     },
+    { title: "Talent Acquisition",     company: "TalentCross",    url: "https://talentcross.biz"                 },
   ];
 
   const socials = [
@@ -374,7 +377,7 @@ const About = () => {
     { label: "GitHub",     href: "https://github.com/jarbram",                 icon: <IconGitHub />    },
   ];
 
-  const tools = ["Claude", "Gemini", "V0", "Bolt.new", "Lovable", "n8n", "Airtable", "Softr", "Vercel", "Antigravity"];
+  const tools = ["Claude Code", "Claude", "OpenAI", "Gemini", "n8n", "Next.js", "Supabase", "Python", "Remotion", "Playwright", "Vercel", "AWS"];
 
   return (
     <>
@@ -384,9 +387,9 @@ const About = () => {
 
           {/* ── Chat column ── */}
           <ChatCard
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            animate="visible"
           >
             <ChatTopBar>
               <AvatarWrap>
@@ -395,7 +398,7 @@ const About = () => {
               </AvatarWrap>
               <ChatMeta>
                 <ChatName>Abraham Huacchillo</ChatName>
-                <ChatRole>AI Ops Specialist · Product Builder</ChatRole>
+                <ChatRole>AI Ops Specialist @ Subastop · Product Builder</ChatRole>
               </ChatMeta>
             </ChatTopBar>
 
@@ -434,11 +437,11 @@ const About = () => {
           <InfoColumn>
 
             <InfoCard
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.08, ease: [0.23, 1, 0.32, 1] }}
+              variants={reveal}
+              initial="hidden"
+              animate="visible"
             >
-              <CardLabel>Currently</CardLabel>
+              <CardLabel>Experience</CardLabel>
               {roles.map((role, i) => (
                 <RoleItem
                   key={i}
@@ -461,9 +464,9 @@ const About = () => {
             </InfoCard>
 
             <InfoCard
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.16, ease: [0.23, 1, 0.32, 1] }}
+              variants={reveal}
+              initial="hidden"
+              animate="visible"
             >
               <CardLabel>Connect</CardLabel>
               {socials.map((s, i) => (

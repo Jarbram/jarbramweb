@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { useState, useEffect } from 'react';
+import { reveal, threadProps, message } from '../../styles/motion';
 
 /* ── animations ── */
 
@@ -51,13 +52,8 @@ const Hero = styled.div`
   margin-bottom: 3rem;
 `;
 
-const HeroLabel = styled.p`
-  font-size: 0.7rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+const Dot = styled.span`
   color: var(--code);
-  margin-bottom: 0.8rem;
 `;
 
 const HeroTitle = styled(motion.h1)`
@@ -73,7 +69,7 @@ const HeroTitle = styled(motion.h1)`
 
 const HeroSub = styled(motion.p)`
   font-size: 0.95rem;
-  color: #555;
+  color: var(--ink-muted);
   line-height: 1.7;
   max-width: 560px;
   font-weight: 500;
@@ -95,7 +91,7 @@ const QuoteStrip = styled.div`
   align-items: center;
   gap: 0.5rem;
 
-  &::before { content: '>'; color: #444; flex-shrink: 0; }
+  &::before { content: '>'; color: var(--ink-faint); flex-shrink: 0; }
 `;
 
 const Cursor = styled.span`
@@ -113,7 +109,7 @@ const Cursor = styled.span`
 const ChatCard = styled(motion.div)`
   background: var(--surface-1);
   border: 1px solid var(--surface-3);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 2rem;
 `;
@@ -126,26 +122,27 @@ const ChatTopBar = styled.div`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
 `;
 
-const ChatBody = styled.div`
+const ChatBody = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.4rem;
 `;
 
-const MsgMeta = styled.span`
+const MsgMeta = styled(motion.span)`
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(255,255,255,0.2);
+  color: var(--ink-faint);
   padding: 0 0.4rem;
   align-self: ${p => p.$right ? 'flex-end' : 'flex-start'};
 `;
 
-const Q = styled.div`
+const Q = styled(motion.div)`
+  transform-origin: bottom left;
   background: var(--ink);
   color: var(--bg);
   padding: 0.75rem 1.1rem;
@@ -158,8 +155,9 @@ const Q = styled.div`
   line-height: 1.55;
 `;
 
-const A = styled.div`
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+const A = styled(motion.div)`
+  transform-origin: bottom right;
+  background: var(--accent);
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -169,7 +167,7 @@ const A = styled.div`
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.55;
-  box-shadow: 0 4px 18px rgba(254,74,35,0.2);
+  box-shadow: 0 8px 20px -10px rgba(254,74,35,0.45);
 `;
 
 /* ── grid ── */
@@ -188,7 +186,7 @@ const Grid = styled.div`
 const Card = styled(motion.div)`
   background: var(--surface-1);
   border: 1px solid var(--surface-3);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
 `;
 
@@ -197,7 +195,7 @@ const CardLabel = styled.h3`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
   margin-bottom: 1.2rem;
 `;
 
@@ -212,7 +210,7 @@ const ToolGroupLabel = styled.p`
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #444;
+  color: var(--ink-muted);
   margin-bottom: 0.6rem;
 `;
 
@@ -230,8 +228,11 @@ const Badge = styled.span`
   padding: 0.28rem 0.65rem;
   border-radius: 6px;
   background: var(--surface-2);
-  color: #888;
+  color: var(--ink-muted);
   border: 1px solid var(--line);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+
+  &:hover { color: var(--ink); border-color: var(--code); }
 `;
 
 const GitHubCard = styled(motion.a)`
@@ -240,14 +241,16 @@ const GitHubCard = styled(motion.a)`
   justify-content: space-between;
   background: var(--surface-1);
   border: 1px solid var(--surface-3);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 1.4rem 1.6rem;
   text-decoration: none;
   transition: border-color 0.25s ease, background 0.25s ease;
 
+  color: var(--ink-muted);
+
   &:hover {
-    border-color: var(--accent);
-    background: #191919;
+    border-color: var(--code);
+    color: var(--ink);
   }
 `;
 
@@ -262,7 +265,7 @@ const GitHubLabel = styled.span`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
 `;
 
 const GitHubTitle = styled.span`
@@ -274,32 +277,53 @@ const GitHubTitle = styled.span`
 `;
 
 const GitHubIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="#555">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
   </svg>
 );
 
 const ArrowIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12h14M12 5l7 7-7 7"/>
   </svg>
 );
 
 /* ── component ── */
 
+const quotes = [
+  '"It works on my machine" — Every dev ever 😅',
+  '"The best code is no code at all" — Jeff Atwood',
+  '"First, solve the problem. Then, write the code" — John Johnson',
+  '"Good developers copy, great ones steal from Stack Overflow" — Anonymous',
+  '"Code never lies, comments sometimes do" — Ron Jeffries',
+  'Now AI writes the code. We architect the thinking.',
+  'The fastest ship is the one that validates before it builds.',
+];
+
+const stacks = [
+  { label: 'AI Stack', groups: [
+    ['Models', ['Claude', 'GPT-4o', 'Gemini', 'DeepSeek', 'Amazon Bedrock']],
+    ['Agents & coding', ['Claude Code', 'Cursor', 'GitHub Copilot', 'Antigravity', 'MCP']],
+    ['Vibe coding', ['V0', 'Bolt.new', 'Lovable']],
+    ['Generative media', ['Higgsfield', 'Kling', 'Seedance', 'Veo 3', 'Nano Banana', 'Whisper']],
+    ['Video as code', ['Remotion', 'HyperFrames']],
+    ['RAG & memory', ['Pinecone', 'pgvector']],
+    ['Automation & no-code', ['n8n', 'Airtable', 'Softr']],
+    ['Research', ['Perplexity']],
+  ] },
+  { label: 'Dev Stack', groups: [
+    ['Frontend', ['React', 'Next.js', 'TypeScript', 'Astro', 'Tailwind', 'Vite']],
+    ['Backend', ['Go', 'Node.js', 'Python', 'FastAPI', 'Supabase']],
+    ['Testing & scraping', ['Playwright']],
+    ['Infra', ['Vercel', 'AWS', 'Docker']],
+    ['Security', ['Kali Linux', 'Burp Suite']],
+  ] },
+];
+
 const Code = () => {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [displayed, setDisplayed]   = useState('');
 
-  const quotes = [
-    '"It works on my machine" — Every dev ever 😅',
-    '"The best code is no code at all" — Jeff Atwood',
-    '"First, solve the problem. Then, write the code" — John Johnson',
-    '"Good developers copy, great ones steal from Stack Overflow" — Anonymous',
-    '"Code never lies, comments sometimes do" — Ron Jeffries',
-    'Now AI writes the code. We architect the thinking.',
-    'The fastest ship is the one that validates before it builds.',
-  ];
 
   useEffect(() => {
     let i = 0;
@@ -323,13 +347,13 @@ const Code = () => {
         <Container>
 
           <Hero>
-            <HeroLabel>Code & AI</HeroLabel>
             <HeroTitle
-              initial={{ opacity: 0, y: 18, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
             >
-              {'< CodeLife />'}
+              {'< CodeLife '}<Dot>{'/>'}</Dot>
             </HeroTitle>
             <HeroSub
               initial={{ opacity: 0, y: 14 }}
@@ -346,111 +370,58 @@ const Code = () => {
           </QuoteStrip>
 
           <ChatCard
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
           >
             <ChatTopBar>The journey</ChatTopBar>
-            <ChatBody>
-              <MsgMeta>Curious</MsgMeta>
-              <Q>How did you start coding? 🤓</Q>
-              <MsgMeta $right>Abraham</MsgMeta>
-              <A>Go was my first language. Deep end first. Had an amazing mentor — Carlos — who made goroutines click.</A>
-              <MsgMeta>Curious</MsgMeta>
-              <Q>And how does AI fit into that now?</Q>
-              <MsgMeta $right>Abraham</MsgMeta>
-              <A>AI is the new layer. I use Claude, Gemini, V0, and n8n to build and automate faster than ever. Code is still the foundation — AI multiplies it.</A>
+            <ChatBody {...threadProps}>
+              <MsgMeta variants={message}>Curious</MsgMeta>
+              <Q variants={message}>How did you start coding? 🤓</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>Go was my first language. Deep end first. Had an amazing mentor — Carlos — who made goroutines click.</A>
+              <MsgMeta variants={message}>Curious</MsgMeta>
+              <Q variants={message}>And how does AI fit into that now?</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>AI is the new layer. Code is still the foundation — AI multiplies it.</A>
+              <MsgMeta variants={message}>Curious</MsgMeta>
+              <Q variants={message}>What does that look like day to day?</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>At Subastop I pair with Claude Code: Subastín in Python, Prisma rendering reels in Remotion, the help center in Astro. Atlas runs on Next.js + Supabase.</A>
             </ChatBody>
           </ChatCard>
 
           <Grid>
-            <Card
-              initial={{ opacity: 0, y: 18, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <CardLabel>AI Stack</CardLabel>
-              <ToolGroup>
-                <ToolGroupLabel>Models</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>Claude</Badge>
-                  <Badge>Gemini</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>Vibe coding</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>V0</Badge>
-                  <Badge>Bolt.new</Badge>
-                  <Badge>Lovable</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>Automation</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>n8n</Badge>
-                  <Badge>Airtable</Badge>
-                  <Badge>Softr</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>Deploy</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>Vercel</Badge>
-                  <Badge>Antigravity</Badge>
-                </BadgeRow>
-              </ToolGroup>
-            </Card>
-
-            <Card
-              initial={{ opacity: 0, y: 18, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.38, delay: 0.07, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <CardLabel>Dev Stack</CardLabel>
-              <ToolGroup>
-                <ToolGroupLabel>Frontend</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>React</Badge>
-                  <Badge>TypeScript</Badge>
-                  <Badge>Vite</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>Backend</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>Go</Badge>
-                  <Badge>Node.js</Badge>
-                  <Badge>Python</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>Security</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>Kali Linux</Badge>
-                  <Badge>Burp Suite</Badge>
-                </BadgeRow>
-              </ToolGroup>
-              <ToolGroup>
-                <ToolGroupLabel>DevOps</ToolGroupLabel>
-                <BadgeRow>
-                  <Badge>Docker</Badge>
-                  <Badge>AWS</Badge>
-                </BadgeRow>
-              </ToolGroup>
-            </Card>
+            {stacks.map(stack => (
+              <Card
+                key={stack.label}
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-40px' }}
+              >
+                <CardLabel>{stack.label}</CardLabel>
+                {stack.groups.map(([group, tools]) => (
+                  <ToolGroup key={group}>
+                    <ToolGroupLabel>{group}</ToolGroupLabel>
+                    <BadgeRow>
+                      {tools.map(t => <Badge key={t}>{t}</Badge>)}
+                    </BadgeRow>
+                  </ToolGroup>
+                ))}
+              </Card>
+            ))}
           </Grid>
 
           <GitHubCard
             href="https://github.com/jarbram"
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 14, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
           >
             <GitHubLeft>
               <GitHubLabel>Repos & open source</GitHubLabel>

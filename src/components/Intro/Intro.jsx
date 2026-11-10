@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { scrollRoot } from '../../styles/motion';
 import { useNavigate } from 'react-router-dom';
 
 /* ── animations ── */
@@ -201,6 +202,12 @@ const lineVariants = {
 
 const Intro = () => {
   const navigate = useNavigate();
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll({ container: scrollRoot });
+  const h = window.innerHeight;
+  const heroScale   = useTransform(scrollY, [0, h * 0.7], [1, 0.9]);
+  const heroOpacity = useTransform(scrollY, [0, h * 0.6], [1, 0]);
+  const heroBlur    = useTransform(scrollY, [0, h * 0.7], ['blur(0px)', 'blur(10px)']);
 
   const go = (section) => {
     if (section === 'linkedin') { window.open('https://www.linkedin.com/in/abraham-huacchillo/', '_blank'); return; }
@@ -208,11 +215,12 @@ const Intro = () => {
     navigate(`/${section}`);
   };
 
-  const scrollToNext = () => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+  const scrollToNext = () => scrollRoot.current.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
 
   return (
     <IntroSection>
       <AmbientBg />
+      <motion.div style={reduce ? undefined : { scale: heroScale, opacity: heroOpacity, filter: heroBlur }}>
       <TextContainer
         as={motion.div}
         variants={containerVariants}
@@ -264,6 +272,7 @@ const Intro = () => {
           AI Ops Specialist · Product Builder · Peru
         </Tagline>
       </TextContainer>
+      </motion.div>
 
       <ScrollIndicator
         initial={{ opacity: 0, y: 10 }}

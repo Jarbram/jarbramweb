@@ -150,7 +150,7 @@ const SocialRow = styled.a`
   gap: 0.8rem;
   width: 180px;
   padding: 0.65rem 0.9rem;
-  color: #444;
+  color: var(--ink-muted);
   text-decoration: none;
   background: var(--surface-1);
   border: 1px solid #222;

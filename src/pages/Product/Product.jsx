@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { useState, useEffect } from 'react';
+import { reveal, threadProps, message } from '../../styles/motion';
 
 /* ── animations ── */
 
@@ -51,13 +52,8 @@ const Hero = styled.div`
   margin-bottom: 3rem;
 `;
 
-const HeroLabel = styled.p`
-  font-size: 0.7rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+const Dot = styled.span`
   color: var(--product);
-  margin-bottom: 0.8rem;
 `;
 
 const HeroTitle = styled(motion.h1)`
@@ -66,13 +62,13 @@ const HeroTitle = styled(motion.h1)`
   font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   margin-bottom: 1rem;
 `;
 
 const HeroSub = styled(motion.p)`
   font-size: 0.95rem;
-  color: #555;
+  color: var(--ink-muted);
   line-height: 1.7;
   max-width: 560px;
   font-weight: 500;
@@ -94,7 +90,7 @@ const QuoteStrip = styled.div`
   align-items: center;
   gap: 0.5rem;
 
-  &::before { content: '>'; color: #444; flex-shrink: 0; }
+  &::before { content: '>'; color: var(--ink-faint); flex-shrink: 0; }
 `;
 
 const Cursor = styled.span`
@@ -112,7 +108,7 @@ const Cursor = styled.span`
 const ChatCard = styled(motion.div)`
   background: var(--surface-1);
   border: 1px solid var(--surface-3);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 2rem;
 `;
@@ -125,26 +121,27 @@ const ChatTopBar = styled.div`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
 `;
 
-const ChatBody = styled.div`
+const ChatBody = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.4rem;
 `;
 
-const MsgMeta = styled.span`
+const MsgMeta = styled(motion.span)`
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(255,255,255,0.2);
+  color: var(--ink-faint);
   padding: 0 0.4rem;
   align-self: ${p => p.$right ? 'flex-end' : 'flex-start'};
 `;
 
-const Q = styled.div`
+const Q = styled(motion.div)`
+  transform-origin: bottom left;
   background: var(--ink);
   color: var(--bg);
   padding: 0.75rem 1.1rem;
@@ -157,8 +154,9 @@ const Q = styled.div`
   line-height: 1.55;
 `;
 
-const A = styled.div`
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+const A = styled(motion.div)`
+  transform-origin: bottom right;
+  background: var(--accent);
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -168,7 +166,7 @@ const A = styled.div`
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.55;
-  box-shadow: 0 4px 18px rgba(254,74,35,0.2);
+  box-shadow: 0 8px 20px -10px rgba(254,74,35,0.45);
 `;
 
 /* ── grid ── */
@@ -186,7 +184,7 @@ const Grid = styled.div`
 const Card = styled(motion.div)`
   background: var(--surface-1);
   border: 1px solid var(--surface-3);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
 `;
 
@@ -195,7 +193,7 @@ const CardLabel = styled.h3`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.28);
+  color: var(--ink-faint);
   margin-bottom: 1.2rem;
 `;
 
@@ -233,7 +231,7 @@ const StepText = styled.div`
   }
   p {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--ink-muted);
     line-height: 1.55;
   }
 `;
@@ -251,7 +249,7 @@ const StatRow = styled.div`
 
 const StatLabel = styled.span`
   font-size: 0.82rem;
-  color: #555;
+  color: var(--ink-muted);
   font-weight: 600;
 `;
 
@@ -261,21 +259,67 @@ const StatValue = styled.span`
   color: var(--product);
 `;
 
+const ShipRow = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--surface-2);
+  transition: padding var(--dur-base) var(--ease-out);
+
+  &:last-child { border-bottom: none; padding-bottom: 0; }
+
+  strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  em {
+    font-style: normal;
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+  }
+
+  @media (hover: hover) {
+    &:hover { padding-left: 0.4rem; }
+    &:hover span:last-child { color: var(--product); }
+  }
+`;
+
+const ShipArrow = styled.span`
+  color: var(--ink-faint);
+  font-size: 1.1rem;
+  transition: color var(--dur-base) var(--ease-out);
+`;
+
+const shipped = [
+  { name: 'LadraApp', what: 'SaaS for veterinary clinics', url: 'https://ladraapp.com' },
+  { name: 'DJPONLA',  what: 'Live song requests for DJs', url: 'https://www.djponla.com' },
+  { name: 'Atlas',    what: 'CV adapted to every job, no invented experience', url: 'https://atlas-web-ten-liard.vercel.app/' },
+  { name: 'Sinkarta', what: 'Digital invitations with real-time RSVP', url: 'https://sinkarta.com' },
+];
+
 /* ── component ── */
+
+const quotes = [
+  "Fall in love with the problem, not the solution — Steve Blank",
+  "If you're not embarrassed by your first MVP, you launched too late — Reid Hoffman",
+  "Make things people want — Paul Graham",
+  "The best way to predict the future is to create it — Peter Drucker",
+  "A product manager's best friend? User feedback and a shipping deadline ☕",
+  "MVP: build the smallest thing that creates the biggest impact",
+  "Validate fast, learn faster, ship even faster",
+  "Prompts are cheap. Problems worth solving are not.",
+  "The prototype is the spec.",
+];
 
 const Product = () => {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [displayed, setDisplayed]   = useState('');
 
-  const quotes = [
-    "Fall in love with the problem, not the solution — Steve Blank",
-    "If you're not embarrassed by your first MVP, you launched too late — Reid Hoffman",
-    "Make things people want — Paul Graham",
-    "The best way to predict the future is to create it — Peter Drucker",
-    "A product manager's best friend? User feedback and a shipping deadline ☕",
-    "MVP: build the smallest thing that creates the biggest impact",
-    "Validate fast, learn faster, ship even faster",
-  ];
 
   useEffect(() => {
     let i = 0;
@@ -299,21 +343,21 @@ const Product = () => {
         <Container>
 
           <Hero>
-            <HeroLabel>Product Builder</HeroLabel>
             <HeroTitle
-              initial={{ opacity: 0, y: 18, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
             >
-              From idea to<br />digital reality.
+              From idea to<br />live product<Dot>.</Dot>
             </HeroTitle>
             <HeroSub
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.12, ease: [0.23, 1, 0.32, 1] }}
             >
-              Building products isn't about perfect code or fancy features.
-              It's about solving real problems — fast, validated, and shipped.
+              AI made building cheap. Knowing what to build didn't get any easier.
+              I validate with users, vibe-code the first version, and ship it on real infrastructure.
             </HeroSub>
           </Hero>
 
@@ -322,66 +366,78 @@ const Product = () => {
           </QuoteStrip>
 
           <ChatCard
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
           >
             <ChatTopBar>How it started</ChatTopBar>
-            <ChatBody>
-              <MsgMeta>Incubator</MsgMeta>
-              <Q>We want to build something for the party scene. Do you want to co-found it?</Q>
-              <MsgMeta $right>Abraham</MsgMeta>
-              <A>Talked to 100+ DJs and partygoers first. Validated the problem. Then we built.</A>
-              <MsgMeta>Partner</MsgMeta>
-              <Q>Now we need a SaaS for veterinary clinics. Same approach?</Q>
-              <MsgMeta $right>Abraham</MsgMeta>
-              <A>Problem first. Clinics drowning in paperwork. LadraApp shipped in months.</A>
+            <ChatBody {...threadProps}>
+              <MsgMeta variants={message}>Incubator</MsgMeta>
+              <Q variants={message}>We want to build something for the party scene. Do you want to co-found it?</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>Talked to 100+ DJs and partygoers first. Validated the problem. Then we built.</A>
+              <MsgMeta variants={message}>Partner</MsgMeta>
+              <Q variants={message}>Now we need a SaaS for veterinary clinics. Same approach?</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>Problem first. Clinics drowning in paperwork. LadraApp shipped in months.</A>
+              <MsgMeta variants={message}>Subastop</MsgMeta>
+              <Q variants={message}>VMC has to scale support and content without hiring a team for each. Can AI carry it?</Q>
+              <MsgMeta variants={message} $right>Abraham</MsgMeta>
+              <A variants={message}>Where it saves hours, yes. Subastín answers buyers and hands off to an advisor; Prisma turns an auction lot into a reel.</A>
             </ChatBody>
           </ChatCard>
 
           <Grid>
             <Card
-              initial={{ opacity: 0, y: 18, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
             >
               <CardLabel>The method</CardLabel>
               <Step>
                 <StepNum>01</StepNum>
                 <StepText>
-                  <h4>Problem first</h4>
-                  <p>Never start with a solution. Talk to real users. Become obsessed with the problem.</p>
+                  <h4>Problem, not features</h4>
+                  <p>Talk to real users first. I write the problem down before I write a single prompt.</p>
                 </StepText>
               </Step>
               <Step>
                 <StepNum>02</StepNum>
                 <StepText>
-                  <h4>Validate fast</h4>
-                  <p>Quick experiments, faster learnings. A failed test is a successful data point.</p>
+                  <h4>Prototype in hours</h4>
+                  <p>Vibe-code a clickable version with V0, Lovable or Claude Code and put it in front of users that same week.</p>
                 </StepText>
               </Step>
               <Step>
                 <StepNum>03</StepNum>
                 <StepText>
-                  <h4>Ship the MVP</h4>
-                  <p>Build the smallest thing that creates the biggest impact. If it solves it, ship it.</p>
+                  <h4>Ship on real rails</h4>
+                  <p>Auth, data and payments on managed primitives — Supabase, Vercel. The prototype becomes the spec.</p>
                 </StepText>
               </Step>
               <Step>
                 <StepNum>04</StepNum>
                 <StepText>
-                  <h4>Measure and iterate</h4>
-                  <p>Every feature should make users happier or bring more users. Ideally both.</p>
+                  <h4>Review like an editor</h4>
+                  <p>AI writes the boilerplate. I own quality, security and how the pieces fit.</p>
+                </StepText>
+              </Step>
+              <Step>
+                <StepNum>05</StepNum>
+                <StepText>
+                  <h4>Measure, then automate</h4>
+                  <p>Keep what moves the numbers, and hand the repetitive ops to agents so the team stays small.</p>
                 </StepText>
               </Step>
             </Card>
 
             <Card
-              initial={{ opacity: 0, y: 18, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.38, delay: 0.07, ease: [0.23, 1, 0.32, 1] }}
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
             >
               <CardLabel>By the numbers</CardLabel>
               <StatRow>
@@ -389,8 +445,8 @@ const Product = () => {
                 <StatValue>1,000+</StatValue>
               </StatRow>
               <StatRow>
-                <StatLabel>Products founded</StatLabel>
-                <StatValue>3</StatValue>
+                <StatLabel>Own products live</StatLabel>
+                <StatValue>4</StatValue>
               </StatRow>
               <StatRow>
                 <StatLabel>DJs on DJPONLA</StatLabel>
@@ -402,6 +458,25 @@ const Product = () => {
               </StatRow>
             </Card>
           </Grid>
+
+          <Card
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            style={{ marginTop: '1.2rem' }}
+          >
+            <CardLabel>Shipped</CardLabel>
+            {shipped.map(item => (
+              <ShipRow key={item.name} href={item.url} target="_blank" rel="noopener noreferrer">
+                <span>
+                  <strong>{item.name}</strong>
+                  <em>{item.what}</em>
+                </span>
+                <ShipArrow aria-hidden="true">→</ShipArrow>
+              </ShipRow>
+            ))}
+          </Card>
 
         </Container>
         <Footer />

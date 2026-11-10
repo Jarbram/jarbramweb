@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { reveal, hoverLift, ease } from '../../styles/motion';
-import { useState, useEffect } from 'react';
+import { reveal, hoverLift, ease, threadProps, message, useScreenReveal } from '../../styles/motion';
+import { useState, useEffect, useRef } from 'react';
 import Header from '../Header/Header';
 import { NavLink } from 'react-router-dom';
 
@@ -33,7 +33,7 @@ const Title = styled.h2`
     display: block;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #444;
+    color: var(--ink-muted);
     text-transform: none;
     margin-top: 0.4rem;
     letter-spacing: 0.01em;
@@ -135,22 +135,23 @@ const Tag = styled.span`
 
 /* ── Chat bubbles ── */
 
-const ChatArea = styled.div`
+const ChatArea = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 `;
 
-const MsgMeta = styled.span`
+const MsgMeta = styled(motion.span)`
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(255,255,255,0.2);
+  color: var(--ink-faint);
   padding: 0 0.4rem;
   align-self: ${props => props.$right ? 'flex-end' : 'flex-start'};
 `;
 
-const QuestionBubble = styled.div`
+const QuestionBubble = styled(motion.div)`
+  transform-origin: bottom left;
   background: var(--ink);
   color: var(--bg);
   padding: 0.75rem 1.1rem;
@@ -163,8 +164,9 @@ const QuestionBubble = styled.div`
   line-height: 1.55;
 `;
 
-const ResponseBubble = styled.div`
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+const ResponseBubble = styled(motion.div)`
+  transform-origin: bottom right;
+  background: var(--accent);
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -343,7 +345,7 @@ const CTARow = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   font-size: 0.9rem;
-  color: #555;
+  color: var(--ink-muted);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -407,6 +409,14 @@ const IconClose = () => (
 
 const cardVariants = reveal;
 const MOBILE = '(max-width: 768px)';
+
+/* ── Captura que se abre con el scroll ── */
+
+const RevealWrap = ({ children, ...props }) => {
+  const ref = useRef(null);
+  const style = useScreenReveal(ref);
+  return <SliderWrap ref={ref} style={style} {...props}>{children}</SliderWrap>;
+};
 
 /* ── Component ── */
 
@@ -628,20 +638,16 @@ const Projects = () => {
               </ProjectHeader>
 
               {/* Chat */}
-              <ChatArea>
-                <MsgMeta>Client</MsgMeta>
-                <QuestionBubble>{project.description}</QuestionBubble>
-                <MsgMeta $right>Abraham</MsgMeta>
-                <ResponseBubble>{project.response}</ResponseBubble>
+              <ChatArea {...threadProps}>
+                <MsgMeta variants={message}>Client</MsgMeta>
+                <QuestionBubble variants={message}>{project.description}</QuestionBubble>
+                <MsgMeta variants={message} $right>Abraham</MsgMeta>
+                <ResponseBubble variants={message}>{project.response}</ResponseBubble>
               </ChatArea>
 
               {/* Slider */}
               {imgsOf(project.id).length > 0 && (
-                <SliderWrap
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4 }}
+                <RevealWrap
                   onTouchStart={handleTouchStart}
                   onTouchEnd={(e) => handleTouchEnd(e, project.id)}
                 >
@@ -669,15 +675,15 @@ const Projects = () => {
                     <IconBtn onClick={() => slide(project.id, 'prev')}><IconLeft /></IconBtn>
                     <IconBtn onClick={() => slide(project.id, 'next')}><IconRight /></IconBtn>
                   </SliderControls>
-                </SliderWrap>
+                </RevealWrap>
               )}
 
               {/* Closing chat */}
-              <ChatArea>
-                <MsgMeta>Client</MsgMeta>
-                <QuestionBubble>{project.additionalResponses[0]}</QuestionBubble>
-                <MsgMeta $right>Abraham</MsgMeta>
-                <ResponseBubble>
+              <ChatArea {...threadProps}>
+                <MsgMeta variants={message}>Client</MsgMeta>
+                <QuestionBubble variants={message}>{project.additionalResponses[0]}</QuestionBubble>
+                <MsgMeta variants={message} $right>Abraham</MsgMeta>
+                <ResponseBubble variants={message}>
                   {project.websiteUrl
                     ? <ProjectLink href={project.websiteUrl} target="_blank" rel="noopener noreferrer">{project.additionalResponses[1]}</ProjectLink>
                     : project.additionalResponses[1]

@@ -16,7 +16,7 @@ Un portafolio oscuro que habla en **conversaciones**: cada proyecto es un chat e
 | `--surface-3` | `#232323` | Bordes de tarjeta, controles |
 | `--line` / `--line-strong` | `#2a2a2a` / `#383838` | Divisores, hover de borde, scrollbar |
 | `--ink` | `#fdfbfb` | Texto principal |
-| `--ink-muted` / `--ink-faint` | `#9a9a9a` / `#6b6b6b` | Metadatos (solo ≥ 12px) |
+| `--ink-muted` / `--ink-faint` | `#9a9a9a` / `#858585` | Texto secundario / metadatos (≥ 4.5:1 sobre las superficies) |
 | `--accent` | `#FE4A23` | Marca: respuestas de Abraham, foco, selección, CTA principal |
 | `--product` | `#50C878` | Sección Product |
 | `--code` | `#9B59B6` | Sección Code |
@@ -53,12 +53,18 @@ Una curva para todo: `--ease-out` = `cubic-bezier(0.23, 1, 0.32, 1)` (en JS: `ea
 
 | Momento | Qué hace | Token |
 |---|---|---|
-| **Cambio de página** (el momento principal) | Fade + subida 16px + enfoque desde `blur(8px)`, 560ms | `page` |
-| Aparición al scroll | Fade + subida 24px + `blur(6px)` → nítido, 500ms | `reveal` |
-| Hover de tarjeta | Sube 4px, el borde pasa a `--line-strong` y aparece la sombra | `hoverLift` |
-| Slider | Crossfade con un leve zoom de 1.02 a 1 | inline |
+| **Conversación que se reproduce** (el momento principal) | Al entrar en pantalla, cada mensaje llega en secuencia (stagger 120ms, spring); la burbuja nace desde su cola: cliente abajo-izquierda, Abraham abajo-derecha | `thread` + `message` |
+| Captura que se abre | Ligada al scroll: `clip-path` de `inset(10% 7%)` → `inset(0)` mientras la tarjeta sube | `useScreenReveal` |
+| Hero que se aleja | Ligado al scroll: escala 1→0.9, opacidad 1→0, `blur` 0→10px en el primer 70% de pantalla | `Intro.jsx` |
+| Barra de progreso | 2px arriba, con el color de la sección actual, suavizada con spring | `App.jsx` |
+| Cambio de página | Fade + subida 16px + enfoque desde `blur(8px)`, 560ms | `page` |
+| Aparición de tarjetas | Fade + subida 24px + `blur(6px)` → nítido, 500ms | `reveal` |
+| Hover de tarjeta | Sube 4px, borde `--line-strong`, aparece la sombra | `hoverLift` |
+| Slider | Crossfade con zoom 1.02→1 | inline |
 | Press de botón | `scale(0.96)`, 160ms | CSS global |
 
+- Todo el scroll vive en `#root` (body es fixed): cualquier `useScroll` usa `container: scrollRoot`.
+- Se usa Framer Motion y no `animation-timeline` CSS porque Firefox aún no lo soporta por defecto (nov 2026).
 - `MotionConfig reducedMotion="user"` y la media query global respetan `prefers-reduced-motion`.
 - Cada animación con `filter` termina en `filter: none` (`transitionEnd`), porque un filtro activo rompe los `position: fixed`.
 
