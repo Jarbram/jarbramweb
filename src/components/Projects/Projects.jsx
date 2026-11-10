@@ -107,6 +107,13 @@ const Tag = styled.span`
       case 'education':        return '#9B59B6';
       case 'health tech':      return '#50C878';
       case 'saas':             return '#FE4A23';
+      case 'ai ops':
+      case 'ai':               return '#B39DFF';
+      case 'automation':       return '#FFD166';
+      case 'career':           return '#F7A072';
+      case 'events':           return '#FFB4A2';
+      case 'agency':
+      case 'web':              return '#45B7D1';
       default:                 return '#252525';
     }
   }};
@@ -402,6 +409,23 @@ const Projects = () => {
 
   const projects = [
     {
+      id: 5,
+      title: "Subastop · VMC",
+      logo: null,
+      tags: [
+        { type: "AI OPS",     label: "AI OPS" },
+        { type: "AUTOMATION", label: "AUTOMATION" },
+      ],
+      images: ["/subastop-1.webp","/subastop-2.webp","/subastop-3.webp","/subastop-4.webp","/subastop-5.webp","/subastop-6.webp"],
+      description: "VMC sells cars at auction across Peru. Support, content and tooling all had to move faster — without a new team for each.",
+      response: "I build the AI layer: a buyer help center, Subastín our support chatbot, a video studio and the Concorde design system.",
+      additionalResponses: [
+        "Where does it all run?",
+        "Live at vmcsubastas.com",
+      ],
+      websiteUrl: "https://www.vmcsubastas.com",
+    },
+    {
       id: 4,
       title: "LadraApp",
       logo: null,
@@ -409,14 +433,31 @@ const Projects = () => {
         { type: "HEALTH TECH", label: "HEALTH TECH" },
         { type: "SAAS",        label: "SAAS" },
       ],
-      images: [],
+      images: ["/ladraapp-1.webp","/ladraapp-2.webp","/ladraapp-3.webp","/ladraapp-4.webp"],
       description: "Veterinary clinics in Peru were drowning in paperwork — appointments, clinical histories, prescriptions, all manual. I built the solution.",
-      response: "The OS for modern veterinary professionals. Let's ship it.",
+      response: "Clinical records you dictate, vaccine reminders ready for WhatsApp, cash and stock — all from your phone.",
       additionalResponses: [
-        "500+ active clinics are already running their full operation with LadraApp.",
-        "Try it at ladraapp.com",
+        "Can clinics try it before paying?",
+        "7 days free at ladraapp.com",
       ],
       websiteUrl: "https://ladraapp.com",
+    },
+    {
+      id: 6,
+      title: "Atlas",
+      logo: null,
+      tags: [
+        { type: "AI",     label: "AI" },
+        { type: "CAREER", label: "CAREER" },
+      ],
+      images: ["/atlas-1.webp"],
+      description: "Job hunting means rewriting the same CV for every role — and AI tools happily invent experience you don't have.",
+      response: "Atlas adapts your CV to each job using only what's in your profile. A Chrome extension brings any job post in with one click.",
+      additionalResponses: [
+        "Where do I start?",
+        "Sign in at atlas-web-ten-liard.vercel.app",
+      ],
+      websiteUrl: "https://atlas-web-ten-liard.vercel.app/",
     },
     {
       id: 1,
@@ -468,6 +509,40 @@ const Projects = () => {
         "Explore the course at hub.udep.pe",
       ],
       websiteUrl: "https://www.hub.udep.pe/curso-de-especializacion-en-inversion-angel",
+    },
+    {
+      id: 7,
+      title: "Sinkarta",
+      logo: null,
+      tags: [
+        { type: "EVENTS",  label: "EVENTS" },
+        { type: "PRODUCT", label: "PRODUCT" },
+      ],
+      images: ["/sinkarta-1.webp"],
+      description: "Couples wanted invitations as beautiful as paper ones — that guests could actually RSVP to from their phone.",
+      response: "Each one designed to measure, with RSVPs and a shared photo gallery in real time. One link, any phone.",
+      additionalResponses: [
+        "Can we see one?",
+        "Start at sinkarta.com",
+      ],
+      websiteUrl: "https://sinkarta.com",
+    },
+    {
+      id: 8,
+      title: "Enlace",
+      logo: null,
+      tags: [
+        { type: "AGENCY", label: "AGENCY" },
+        { type: "WEB",    label: "WEB" },
+      ],
+      images: ["/enlace-1.webp","/enlace-2.webp","/enlace-3.webp"],
+      description: "The first communications agency in Piura needed a site that showed its full range of services.",
+      response: "Designed and built in Next.js, with a contact form that lands straight in their inbox.",
+      additionalResponses: [
+        "Is it live?",
+        "Visit enlacecomunicacion.pe",
+      ],
+      websiteUrl: "https://www.enlacecomunicacion.pe",
     },
   ];
 

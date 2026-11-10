@@ -335,7 +335,7 @@ const Product = () => {
               <MsgMeta>Partner</MsgMeta>
               <Q>Now we need a SaaS for veterinary clinics. Same approach?</Q>
               <MsgMeta $right>Abraham</MsgMeta>
-              <A>Problem first. 500+ clinics drowning in paperwork. LadraApp shipped in months.</A>
+              <A>Problem first. Clinics drowning in paperwork. LadraApp shipped in months.</A>
             </ChatBody>
           </ChatCard>
 
@@ -391,10 +391,6 @@ const Product = () => {
               <StatRow>
                 <StatLabel>Products founded</StatLabel>
                 <StatValue>3</StatValue>
-              </StatRow>
-              <StatRow>
-                <StatLabel>Active clinics — LadraApp</StatLabel>
-                <StatValue>500+</StatValue>
               </StatRow>
               <StatRow>
                 <StatLabel>DJs on DJPONLA</StatLabel>
