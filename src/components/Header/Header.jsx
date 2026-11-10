@@ -1,215 +1,225 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+/* ── container ── */
 
 const HeaderContainer = styled.header`
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  padding: 2rem;
+  padding: 1.2rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  background: transparent;
+  background: ${p => p.$scrolled ? 'rgba(19,19,19,0.88)' : 'transparent'};
+  backdrop-filter: ${p => p.$scrolled ? 'blur(14px)' : 'none'};
+  border-bottom: 1px solid ${p => p.$scrolled ? '#232323' : 'transparent'};
+  transition: background 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease;
+
+  @media (max-width: 768px) {
+    padding: 1rem 1.2rem;
+  }
 `;
+
+/* ── logo ── */
 
 const Logo = styled(Link)`
-  font-family: 'Space Mono', monospace;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #fdfbfb;
   text-decoration: none;
-  padding: 0.5rem;
-  position: relative;
-  letter-spacing: -1px;
-  
-  &:hover {
-    .dot {
-      transform: scale(1.5) translateY(-1px);
-      opacity: 1;
-    }
-    
-    &::after {
-      width: 100%;
-      opacity: 0.1;
-    }
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: #50fa7b;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: -1;
-  }
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.75; }
 
   .dot {
-    color: #50fa7b;
-    opacity: 0.8;
-    transition: all 0.3s ease;
+    color: #FE4A23;
     display: inline-block;
   }
-  
-  text-shadow: 
-    0 0 1px rgba(255,255,255,0.1),
-    0 0 2px rgba(255,255,255,0.1);
 `;
+
+/* ── nav ── */
 
 const Nav = styled.nav`
   display: flex;
-  gap: 1rem;
+  gap: 0.55rem;
+  align-items: center;
 
   @media (max-width: 768px) {
     position: fixed;
     flex-direction: column;
     top: 0;
-    right: ${props => props.isOpen ? '0' : '-100%'};
-    width: 250px;
+    right: ${p => p.$open ? '0' : '-100%'};
+    width: 240px;
     height: 100vh;
-    background: transparent;
-    padding: 80px 1rem;
-    transition: right 0.3s ease;
-    gap: 0.5rem;
+    background: #161616;
+    border-left: 1px solid #232323;
+    padding: 5rem 1.4rem 2rem;
+    transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    gap: 0.7rem;
+    align-items: stretch;
   }
 `;
 
-const NavLink = styled(Link)`
-  padding: 0.3rem 0.8rem;
+/* ── nav items ── */
+
+const NavItem = styled(Link)`
+  padding: 0.28rem 0.85rem;
   font-weight: 900;
   text-decoration: none;
-  color: ${props => props.isActive ? props.activeColor : '#131313'};
-  transition: all 0.3s ease;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  
-  &:nth-child(1) {
-    background-color: ${props => props.isActive ? '#FFFFFF' : '#50C878'};
-    border-radius: 6px 12px 6px 12px;
-    box-shadow: 0 0 10px rgba(80, 200, 120, 0.3);
-  }
-  
-  &:nth-child(2) {
-    background-color: ${props => props.isActive ? '#FFFFFF' : '#9B59B6'};
-    border-radius: 12px 6px 12px 6px;
-    box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
-  }
-  
-  &:nth-child(3) {
-    background-color: ${props => props.isActive ? '#FFFFFF' : '#4A90E2'};
-    border-radius: 6px 12px 6px 12px;
-    box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+  color: ${p => p.$active ? p.$color : '#131313'};
+  background-color: ${p => p.$active ? '#ffffff' : p.$color};
+  border-radius: ${p => p.$radius};
+  box-shadow: ${p => p.$active ? 'none' : `0 0 12px ${p.$glow}`};
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.18s ease, opacity 0.18s ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px ${p => p.$glow};
+      opacity: 0.92;
+    }
   }
 
-  &:nth-child(4) {
-    background-color: ${props => props.isActive ? '#FFFFFF' : '#F1C40F'};
-    border-radius: 12px 6px 12px 6px;
-    box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  &:active {
+    transform: scale(0.96) translateY(0);
+    box-shadow: none;
   }
 
   @media (max-width: 768px) {
-    width: 100%;
     text-align: center;
-    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
   }
 `;
 
-const MenuButton = styled.button`
+/* ── overlay ── */
+
+const Overlay = styled.div`
   display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 1001;
 
   @media (max-width: 768px) {
     display: block;
-    padding: 0.5rem;
-    border-radius: 6px;
-    
-    span {
-      display: block;
-      width: 25px;
-      height: 3px;
-      background-color: white;
-      margin: 5px 0;
-      transition: all 0.3s ease;
-      
-      &:first-child {
-        transform: ${props => props.isOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'};
-      }
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: ${p => p.$open ? 1 : 0};
+    pointer-events: ${p => p.$open ? 'all' : 'none'};
+    transition: opacity 0.32s ease;
+  }
+`;
 
-      &:nth-child(2) {
-        opacity: ${props => props.isOpen ? '0' : '1'};
-      }
+/* ── hamburger ── */
 
-      &:last-child {
-        transform: ${props => props.isOpen ? 'rotate(-45deg) translate(7px, -7px)' : 'none'};
-      }
+const Hamburger = styled.button`
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0 8px;
+  z-index: 1001;
+  transition: border-color 0.2s ease;
+
+  &:hover { border-color: #404040; }
+
+  @media (max-width: 768px) { display: flex; }
+
+  span {
+    display: block;
+    height: 2px;
+    background: #fdfbfb;
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.28s ease;
+
+    &:first-child {
+      transform: ${p => p.$open ? 'translateY(7px) rotate(45deg)' : 'none'};
+    }
+    &:nth-child(2) {
+      opacity: ${p => p.$open ? '0' : '1'};
+      transform: ${p => p.$open ? 'scaleX(0)' : 'none'};
+    }
+    &:last-child {
+      transform: ${p => p.$open ? 'translateY(-7px) rotate(-45deg)' : 'none'};
     }
   }
 `;
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
+/* ── component ── */
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+const NAV_ITEMS = [
+  { to: '/product', label: 'Product', color: '#50C878', glow: 'rgba(80,200,120,0.28)',  radius: '6px 12px 6px 12px'  },
+  { to: '/code',    label: 'Code',    color: '#9B59B6', glow: 'rgba(155,89,182,0.28)', radius: '12px 6px 12px 6px' },
+  { to: '/about',   label: 'About',   color: '#F1C40F', glow: 'rgba(241,196,15,0.28)', radius: '6px 12px 6px 12px'  },
+];
+
+const Header = () => {
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
+  const location                  = useLocation();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   return (
-    <HeaderContainer>
-      <Logo to="/">
-        Jarbram<span className="dot">.</span>
-      </Logo>
-      <MenuButton isOpen={isMenuOpen} onClick={toggleMenu}>
-        <span></span>
-        <span></span>
-        <span></span>
-      </MenuButton>
-      <Nav isOpen={isMenuOpen}>
-        <NavLink 
-          to="/product" 
-          isActive={location.pathname === '/product'}
-          activeColor="#50C878"
-        >
-          Product
-        </NavLink>
-        <NavLink 
-          to="/code" 
-          isActive={location.pathname === '/code'}
-          activeColor="#9B59B6"
-        >
-          Code
-        </NavLink>
-        <NavLink 
-          to="/tech-recruiter" 
-          isActive={location.pathname === '/tech-recruiter'}
-          activeColor="#4A90E2"
-        >
-          Tech Recruiter
-        </NavLink>
-        <NavLink 
-          to="/about" 
-          isActive={location.pathname === '/about'}
-          activeColor="#F1C40F"
-        >
-          About
-        </NavLink>
-      </Nav>
-    </HeaderContainer>
+    <>
+      <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />
+
+      <HeaderContainer $scrolled={scrolled}>
+        <Logo to="/">
+          Jarbram<span className="dot">.</span>
+        </Logo>
+
+        <Hamburger $open={menuOpen} onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu">
+          <span /><span /><span />
+        </Hamburger>
+
+        <Nav $open={menuOpen}>
+          {NAV_ITEMS.map(item => (
+            <NavItem
+              key={item.to}
+              to={item.to}
+              $active={location.pathname === item.to}
+              $color={item.color}
+              $glow={item.glow}
+              $radius={item.radius}
+            >
+              {item.label}
+            </NavItem>
+          ))}
+        </Nav>
+      </HeaderContainer>
+    </>
   );
 };
 
-export default Header; 
+export default Header;

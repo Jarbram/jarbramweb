@@ -7,22 +7,6 @@ const WeatherContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const WeatherEmoji = styled.span`
-  display: inline-block;
-  transition: transform 0.3s ease;
-  cursor: default;
-
-  &:hover {
-    transform: scale(1.4) rotate(10deg);
-    animation: float 2s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0) scale(1.4); }
-    50% { transform: translateY(-3px) scale(1.4); }
-  }
-`;
-
 const WeatherInfo = styled.div`
   color: #888;
   font-size: 0.9rem;

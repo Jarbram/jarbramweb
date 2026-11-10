@@ -1,534 +1,472 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { useState, useEffect } from 'react';
 
-const ProductSection = styled.section`
+/* ── animations ── */
+
+const blink = keyframes`
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+`;
+
+/* ── layout ── */
+
+const Page = styled.div`
   background: var(--background);
-  padding: 0;
   min-height: 100vh;
-  padding: 0 1rem;
-`;
+  position: relative;
+  overflow: hidden;
 
-const HeroSection = styled.div`
-  text-align: center;
-  max-width: 1200px;
-  margin: 4rem auto;
-`;
-
-const Title = styled(motion.h1)`
-  font-size: 3.5rem;
-  color: #fdfbfb;
-  margin-bottom: 2rem;
-  
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
+  &::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(155,89,182,0.07) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(20px);
   }
 `;
 
-const Subtitle = styled(motion.p)`
-  font-size: 1.2rem;
-  color: #888;
-  max-width: 800px;
+const Container = styled.div`
+  max-width: 900px;
   margin: 0 auto;
-  line-height: 1.6;
+  padding: 2.5rem 1.5rem 6rem;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem 5rem;
+  }
 `;
 
-const ChatContainer = styled.div`
+/* ── hero ── */
+
+const Hero = styled.div`
+  margin-bottom: 3rem;
+`;
+
+const HeroLabel = styled.p`
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #9B59B6;
+  margin-bottom: 0.8rem;
+`;
+
+const HeroTitle = styled(motion.h1)`
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: #fdfbfb;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  font-family: 'Courier New', monospace;
+`;
+
+const HeroSub = styled(motion.p)`
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.7;
+  max-width: 560px;
+  font-weight: 500;
+`;
+
+/* ── quote strip ── */
+
+const QuoteStrip = styled.div`
+  background: #161616;
+  border: 1px solid #232323;
+  border-radius: 12px;
+  padding: 1rem 1.4rem;
+  margin-bottom: 3rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.88rem;
+  color: #9B59B6;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before { content: '>'; color: #444; flex-shrink: 0; }
+`;
+
+const Cursor = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 0.9em;
+  background: #9B59B6;
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: ${blink} 0.9s infinite;
+`;
+
+/* ── chat card ── */
+
+const ChatCard = styled(motion.div)`
+  background: #161616;
+  border: 1px solid #232323;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+`;
+
+const ChatTopBar = styled.div`
+  padding: 0.9rem 1.4rem;
+  background: #1b1b1b;
+  border-bottom: 1px solid #222;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.28);
+`;
+
+const ChatBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  max-width: 650px;
-  margin: 4rem auto;
-  background: rgba(26, 26, 26, 0.8);
-  border-radius: 25px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 0.5rem;
+  padding: 1.4rem;
 `;
 
-const ChatMessage = styled(motion.div)`
-  max-width: 80%;
-  padding: 0.5rem 1.5rem;
-  margin: 0.3rem 0;
-  border-radius: 20px;
-  font-family: "Buzz Black", sans-serif;
-  font-weight: 500;
-  line-height: 1.6;
-  font-size: 1.1rem;
-  letter-spacing: 0.02em;
-  
-  ${props => props.isUser ? `
-    background: #fdfbfb;
-    color: #131313;
-    align-self: flex-start;
-    border-bottom-left-radius: 5px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transform-origin: bottom left;
-    
-    &:hover {
-      transform: scale(1.02);
-      transition: transform 0.3s ease;
-    }
-  ` : `
-    background: linear-gradient(135deg, #4A90E2, #45B7D1);
-    color: #fdfbfb;
-    align-self: flex-end;
-    border-bottom-right-radius: 5px;
-    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
-    transform-origin: bottom right;
-    
-    &:hover {
-      transform: scale(1.02);
-      transition: transform 0.3s ease;
-    }
-  `}
+const MsgMeta = styled.span`
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.2);
+  padding: 0 0.4rem;
+  align-self: ${p => p.$right ? 'flex-end' : 'flex-start'};
 `;
 
-const TechStackSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1.5rem;
-  max-width: 1000px;
-  margin: 4rem auto;
-  padding: 2rem;
+const Q = styled.div`
+  background: #efefef;
+  color: #131313;
+  padding: 0.75rem 1.1rem;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  max-width: 82%;
+  align-self: flex-start;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.55;
 `;
 
-const TechCard = styled(motion.div)`
-  background: linear-gradient(145deg, #1A1A1A, #2A2A2A);
-  padding: 1.5rem;
-  border-radius: 15px;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  
-  img {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 1rem;
-  }
-  
-  h4 {
-    color: #fdfbfb;
-    font-size: 1rem;
-  }
+const A = styled.div`
+  background: linear-gradient(135deg, #FE4A23, #ff6340);
+  color: #fff;
+  padding: 0.75rem 1.1rem;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  max-width: 82%;
+  align-self: flex-end;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.55;
+  box-shadow: 0 4px 18px rgba(254,74,35,0.2);
 `;
 
-const MethodologySection = styled.div`
+/* ── grid ── */
+
+const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto 4rem;
-  padding: 0 0.2rem;
-  
-  @media (max-width: 968px) {
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-bottom: 3rem;
   }
 `;
 
-const MethodologyCard = styled(motion.div)`
-  background: linear-gradient(145deg, #1A1A1A, #2A2A2A);
-  padding: 2rem;
-  border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+const Card = styled(motion.div)`
+  background: #161616;
+  border: 1px solid #232323;
+  border-radius: 20px;
+  padding: 1.5rem;
 `;
 
-const StepContainer = styled.div`
+const CardLabel = styled.h3`
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 1.2rem;
+`;
+
+const ToolGroup = styled.div`
+  margin-bottom: 1.3rem;
+
+  &:last-child { margin-bottom: 0; }
+`;
+
+const ToolGroupLabel = styled.p`
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #444;
+  margin-bottom: 0.6rem;
+`;
+
+const BadgeRow = styled.div`
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 `;
 
-const Emoji = styled.span`
-  font-size: 2rem;
+const Badge = styled.span`
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  background: #1c1c1c;
+  color: #888;
+  border: 1px solid #2a2a2a;
 `;
 
-const StepContent = styled.div`
-  h3 {
-    color: #fdfbfb;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    color: #888;
-  }
-`;
+const GitHubCard = styled(motion.a)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #161616;
+  border: 1px solid #232323;
+  border-radius: 20px;
+  padding: 1.4rem 1.6rem;
+  text-decoration: none;
+  transition: border-color 0.25s ease, background 0.25s ease;
 
-const CaseStudyCard = styled(motion.div)`
-  background: linear-gradient(145deg, #1A1A1A, #2A2A2A);
-  padding: 2rem;
-  border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  
-  h2 {
-    color: #4A90E2;
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    
-    span:last-child {
-      color: #45B7D1;
-    }
+  &:hover {
+    border-color: #FE4A23;
+    background: #191919;
   }
 `;
 
-const StatsList = styled.ul`
-  list-style: none;
-  margin-top: 1.5rem;
+const GitHubLeft = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.3rem;
 `;
 
-const StatItem = styled(motion.li)`
+const GitHubLabel = styled.span`
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.28);
+`;
+
+const GitHubTitle = styled.span`
+  font-size: 1rem;
+  font-weight: 900;
   color: #fdfbfb;
-  padding: 1.5rem;
-  background: rgba(26, 26, 26, 0.8);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  
-  h4 {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #4A90E2;
-  }
-  
-  p {
-    color: #888;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .stat-box {
-    background: rgba(74, 144, 226, 0.1);
-    padding: 0.8rem;
-    border-radius: 10px;
-    text-align: center;
-
-    .number {
-      color: #45B7D1;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 0.3rem;
-    }
-
-    .label {
-      color: #888;
-      font-size: 0.8rem;
-    }
-  }
-  
-  &:hover {
-    transform: translateX(10px);
-    background: rgba(26, 26, 26, 0.9);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 `;
 
-const GithubSection = styled.div`
-  max-width: 1200px;
-  margin: 2rem auto;
-`;
+const GitHubIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#555">
+    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+  </svg>
+);
 
-const GithubEmbed = styled.div`
-  background: linear-gradient(145deg, #1A1A1A, #2A2A2A);
-  border-radius: 25px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  
-  iframe {
-    width: 100%;
-    height: 500px;
-    border: none;
-    border-radius: 15px;
-  }
-`;
+const ArrowIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+);
 
-const QuotesSection = styled.div`
-  text-align: center;
-  margin: 3rem auto 4rem;
-  max-width: 800px;
-  color: #fdfbfb;
-  padding: 0 1rem;
-`;
-
-const QuotesSlider = styled(motion.div)`
-  position: relative;
-  width: 100%;
-  height: 80px;
-  margin: 2rem auto;
-  
-  @media (max-width: 768px) {
-    height: 120px;
-  }
-`;
-
-const QuoteItem = styled(motion.div)`
-  position: absolute;
-  width: 100%;
-  text-align: left;
-  font-size: 1.5rem;
-  font-family: 'Courier New', monospace;
-  color: #4A90E2;
-  padding: 0 2rem;
-  
-  &::before {
-    content: '> ';
-    color: #45B7D1;
-  }
-  
-  .cursor {
-    display: inline-block;
-    width: 0.6em;
-    height: 1.2em;
-    background-color: #45B7D1;
-    margin-left: 2px;
-    vertical-align: middle;
-  }
-  
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-    padding: 0 1rem;
-  }
-`;
+/* ── component ── */
 
 const Code = () => {
-  const [currentQuote, setCurrentQuote] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
-  
+  const [quoteIndex, setQuoteIndex] = useState(0);
+  const [displayed, setDisplayed]   = useState('');
+
   const quotes = [
-    "\"It works on my machine\" - Every dev ever 😅",
-    "\"It's not a bug, it's an undocumented feature\" - Anonymous 🐛",
-    "\"The best code is no code at all\" - Jeff Atwood 🧠",
-    "\"If debugging is removing bugs, programming must be adding them\" - Edsger Dijkstra 🤔",
-    "\"Code never lies, comments sometimes do\" - Ron Jeffries 📝",
-    "\"Coffee is the primary requirement for code\" - Every dev at 3am ☕",
-    "\"Git is like a time machine, but with more conflicts\" - Frustrated Dev 🕰️",
-    "\"First, solve the problem. Then, write the code\" - John Johnson 🎯",
-    "\"Code is like humor. When you have to explain it, it's bad\" - Cory House 😂",
-    "\"Good developers copy, great ones steal from Stack Overflow\" - Anonymous Dev 🥷"
+    '"It works on my machine" — Every dev ever 😅',
+    '"The best code is no code at all" — Jeff Atwood',
+    '"First, solve the problem. Then, write the code" — John Johnson',
+    '"Good developers copy, great ones steal from Stack Overflow" — Anonymous',
+    '"Code never lies, comments sometimes do" — Ron Jeffries',
+    'Now AI writes the code. We architect the thinking.',
+    'The fastest ship is the one that validates before it builds.',
   ];
 
   useEffect(() => {
-    let index = 0;
-    const text = quotes[currentQuote];
-    setDisplayedText('');
-    
-    const typing = setInterval(() => {
-      setDisplayedText(text.slice(0, index + 1));
-      index++;
-      
-      if (index >= text.length) {
-        clearInterval(typing);
-        setTimeout(() => {
-          setCurrentQuote((prev) => (prev + 1) % quotes.length);
-        }, 3000);
+    let i = 0;
+    setDisplayed('');
+    const t = quotes[quoteIndex];
+    const timer = setInterval(() => {
+      setDisplayed(t.slice(0, i + 1));
+      i++;
+      if (i >= t.length) {
+        clearInterval(timer);
+        setTimeout(() => setQuoteIndex(p => (p + 1) % quotes.length), 3000);
       }
-    }, 35);
-
-    return () => {
-      clearInterval(typing);
-    };
-  }, [currentQuote]);
+    }, 32);
+    return () => clearInterval(timer);
+  }, [quoteIndex]);
 
   return (
     <>
-    <Header />
-    <ProductSection>
-      
-      <HeroSection>
-        <Title
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {'< CodeLife />'}
-        </Title>
-      </HeroSection>
+      <Header />
+      <Page>
+        <Container>
 
-      <ChatContainer>
-        <ChatMessage isUser>
-          Hey! How did you start this coding adventure? 🤓
-        </ChatMessage>
-        <ChatMessage>
-          It all started with my brother and endless curiosity! Go was my first love 💙
-        </ChatMessage>
-        <ChatMessage isUser>
-          Go as your first language! Wasn't that intense? 😱
-        </ChatMessage>
-        <ChatMessage>
-          Haha! Let's say I jumped into the deep end first 🏊‍♂️ But I had an amazing mentor, my friend Carlos, who helped me navigate through goroutines and channels 🎯
-        </ChatMessage>
-        <ChatMessage isUser>
-          And how did you end up in frontend? 🎨
-        </ChatMessage>
-        <ChatMessage>
-          Plot twist! Fell in love with creating React interfaces ⚛️ Now I'm like a fullstack chef: cooking both backend and frontend 👨‍🍳✨
-        </ChatMessage>
-      </ChatContainer>
-
-      <QuotesSection>
-        <QuotesSlider>
-          <QuoteItem>
-            {displayedText}
-            <motion.span 
-              className="cursor"
-              animate={{ opacity: [1, 0] }}
-              transition={{ 
-                duration: 0.8,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          </QuoteItem>
-        </QuotesSlider>
-      </QuotesSection>
-
-      <MethodologySection>
-        <MethodologyCard>
-          <h2 style={{ color: '#fdfbfb', fontSize: '2rem', marginBottom: '2rem' }}>
-            My Tech Arsenal 🛠️
-          </h2>
-          
-          <StepContainer>
-            <Emoji>⚡</Emoji>
-            <StepContent>
-              <h3>Speed Demon Backend</h3>
-              <p>Go + Node.js for lightning-fast APIs. Microservices that zoom! 🚀</p>
-            </StepContent>
-          </StepContainer>
-          
-          <StepContainer>
-            <Emoji>✨</Emoji>
-            <StepContent>
-              <h3>Pixel-Perfect Frontend</h3>
-              <p>React + TypeScript. Smooth UIs that spark joy ⚛️</p>
-            </StepContent>
-          </StepContainer>
-          
-          <StepContainer>
-            <Emoji>🔒</Emoji>
-            <StepContent>
-              <h3>Ethical Hacking</h3>
-              <p>Kali Linux + Burp Suite + Metasploit. Security ninja mode activated! 🐱‍💻</p>
-            </StepContent>
-          </StepContainer>
-
-          <StepContainer>
-            <Emoji>🔧</Emoji>
-            <StepContent>
-              <h3>DevOps & Security</h3>
-              <p>Docker + AWS + Nmap. Making the cloud rain securely ☁️🛡️</p>
-            </StepContent>
-          </StepContainer>
-        </MethodologyCard>
-
-        <CaseStudyCard>
-          <h2>
-            <span>Cool Projects</span> 
-            <span>🚀</span>
-          </h2>
-          <StatsList>
-            <StatItem
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
+          <Hero>
+            <HeroLabel>Code & AI</HeroLabel>
+            <HeroTitle
+              initial={{ opacity: 0, y: 18, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             >
-              <h4>
-                <span>🎵</span>
-                DJPONLA
-              </h4>
-              <p>
-                Bridging DJs with their audience in real-time. 
-                Tech magic that turns every beat into an experience!
-              </p>
-              <div className="stats-grid">
-                <div className="stat-box">
-                  <div className="number">100+</div>
-                  <div className="label">Happy DJs</div>
-                </div>
-                <div className="stat-box">
-                  <div className="number">Live</div>
-                  <div className="label">Party Mode</div>
-                </div>
-              </div>
-            </StatItem>
-            
-            <StatItem
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              {'< CodeLife />'}
+            </HeroTitle>
+            <HeroSub
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.12, ease: [0.23, 1, 0.32, 1] }}
             >
-              <h4>
-                <span>🕵</span>
-                LatAm Tech Community
-              </h4>
-              <p>
-                Where code meets culture! Growing together with amazing 
-                developers across Latin America. Because coding is better with friends!
-              </p>
-              <div className="stats-grid">
-                <div className="stat-box">
-                  <div className="number">15+</div>
-                  <div className="label">Countries</div>
-                </div>
-                <div className="stat-box">
-                  <div className="number">∞</div>
-                  <div className="label">Good Vibes</div>
-                </div>
-              </div>
-            </StatItem>
-          </StatsList>
-        </CaseStudyCard>
-      </MethodologySection>
+              Started with Go. Moved to React. Now orchestrating AI agents and vibe coding
+              products into existence. The stack evolves — the shipping never stops.
+            </HeroSub>
+          </Hero>
 
-      <GithubSection>
-        <GithubEmbed>
-          <a 
-            href="https://github.com/jarbram?tab=repositories" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ 
-              color: '#4A90E2', 
-              textDecoration: 'none', 
-              fontSize: '1.2rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1rem'
-            }}
+          <QuoteStrip>
+            {displayed}<Cursor />
+          </QuoteStrip>
+
+          <ChatCard
+            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
           >
-            <span>Check out my GitHub adventures</span>
-            <svg height="32" viewBox="0 0 16 16" width="32">
-              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
-          </a>
-        </GithubEmbed>
-      </GithubSection>
+            <ChatTopBar>The journey</ChatTopBar>
+            <ChatBody>
+              <MsgMeta>Curious</MsgMeta>
+              <Q>How did you start coding? 🤓</Q>
+              <MsgMeta $right>Abraham</MsgMeta>
+              <A>Go was my first language. Deep end first. Had an amazing mentor — Carlos — who made goroutines click.</A>
+              <MsgMeta>Curious</MsgMeta>
+              <Q>And how does AI fit into that now?</Q>
+              <MsgMeta $right>Abraham</MsgMeta>
+              <A>AI is the new layer. I use Claude, Gemini, V0, and n8n to build and automate faster than ever. Code is still the foundation — AI multiplies it.</A>
+            </ChatBody>
+          </ChatCard>
 
-      <Footer />
-    </ProductSection>
+          <Grid>
+            <Card
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <CardLabel>AI Stack</CardLabel>
+              <ToolGroup>
+                <ToolGroupLabel>Models</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>Claude</Badge>
+                  <Badge>Gemini</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>Vibe coding</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>V0</Badge>
+                  <Badge>Bolt.new</Badge>
+                  <Badge>Lovable</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>Automation</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>n8n</Badge>
+                  <Badge>Airtable</Badge>
+                  <Badge>Softr</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>Deploy</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>Vercel</Badge>
+                  <Badge>Antigravity</Badge>
+                </BadgeRow>
+              </ToolGroup>
+            </Card>
+
+            <Card
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.38, delay: 0.07, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <CardLabel>Dev Stack</CardLabel>
+              <ToolGroup>
+                <ToolGroupLabel>Frontend</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>React</Badge>
+                  <Badge>TypeScript</Badge>
+                  <Badge>Vite</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>Backend</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>Go</Badge>
+                  <Badge>Node.js</Badge>
+                  <Badge>Python</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>Security</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>Kali Linux</Badge>
+                  <Badge>Burp Suite</Badge>
+                </BadgeRow>
+              </ToolGroup>
+              <ToolGroup>
+                <ToolGroupLabel>DevOps</ToolGroupLabel>
+                <BadgeRow>
+                  <Badge>Docker</Badge>
+                  <Badge>AWS</Badge>
+                </BadgeRow>
+              </ToolGroup>
+            </Card>
+          </Grid>
+
+          <GitHubCard
+            href="https://github.com/jarbram"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 14, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <GitHubLeft>
+              <GitHubLabel>Repos & open source</GitHubLabel>
+              <GitHubTitle>github.com/jarbram</GitHubTitle>
+            </GitHubLeft>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <GitHubIcon />
+              <ArrowIcon />
+            </div>
+          </GitHubCard>
+
+        </Container>
+        <Footer />
+      </Page>
     </>
   );
 };
 
-export default Code; 
+export default Code;

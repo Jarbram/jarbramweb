@@ -15,6 +15,17 @@ const GlobalStyles = createGlobalStyle`
     --background: #131313;
     --text: #FFFFFF;
     --accent: #FE4A23;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   html {
@@ -51,6 +62,7 @@ const GlobalStyles = createGlobalStyle`
     cursor: pointer;
     font-family: inherit;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   /* Prevenir selección de texto en elementos interactivos */

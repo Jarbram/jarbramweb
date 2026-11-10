@@ -1,6 +1,16 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+
+/* ── animations ── */
+
+const scrollBounce = keyframes`
+  0%   { top: 8px;  opacity: 1; transform: translateX(-50%) scale(1);   }
+  50%  {            opacity: 1; transform: translateX(-50%) scale(1.15); }
+  100% { top: 30px; opacity: 0; transform: translateX(-50%) scale(1);   }
+`;
+
+/* ── layout ── */
 
 const IntroSection = styled.section`
   min-height: 100vh;
@@ -9,157 +19,138 @@ const IntroSection = styled.section`
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 1rem;
+  padding: 6rem 1.5rem 5rem;
   text-align: center;
   overflow: hidden;
+`;
 
-  @media (max-width: 768px) {
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100px;
-      background: linear-gradient(
-        to top,
-        rgba(19, 19, 19, 0.3),
-        transparent
-      );
-      pointer-events: none;
-      animation: fadeInOut 2s infinite;
-    }
+const AmbientBg = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 75%;
+    height: 55%;
+    background: radial-gradient(ellipse at center, rgba(254,74,35,0.11) 0%, transparent 70%);
+    filter: blur(48px);
   }
 
-  @keyframes fadeInOut {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.7; }
+  &::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    right: -8%;
+    width: 45%;
+    height: 55%;
+    background: radial-gradient(ellipse at center, rgba(155,89,182,0.09) 0%, transparent 70%);
+    filter: blur(64px);
   }
 `;
 
 const TextContainer = styled.div`
-  max-width: 800px;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.55rem;
+  position: relative;
+  z-index: 1;
 `;
 
-const TextLine = styled.div`
-  font-size: 2rem;
+const Line = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
   font-weight: 900;
   color: #fdfbfb;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  line-height: 1;
-  text-align: center;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-    gap: 0.4rem;
-    line-height: 1.3;
-  }
+  letter-spacing: 0.025em;
+  line-height: 1;
 
   @media (max-width: 480px) {
-    font-size: 1.3rem;
-    gap: 0.3rem;
+    gap: 0.45rem;
   }
 `;
 
-const Tag = styled(motion.button)`
-  background-color: ${props => props.bgColor || '#FE4A23'};
-  padding: 0.5rem 1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+const Word = styled.span`
   white-space: nowrap;
+`;
+
+/* ── tag buttons ── */
+
+const Tag = styled(motion.button)`
+  background-color: ${p => p.$color || '#FE4A23'};
+  color: #131313;
   border: none;
   cursor: pointer;
+  font-family: inherit;
   font-weight: 900;
   font-size: inherit;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #131313;
-  transition: all 0.3s ease;
-  flex-direction: row-reverse;
-  justify-content: center;
+  padding: 0.45rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  border-radius: ${p => p.$alt ? '12px 6px 12px 6px' : '6px 12px 6px 12px'};
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.18s ease;
 
-  &:nth-of-type(1) {
-    border-radius: 6px 12px 6px 12px;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px ${p => p.$color ? `${p.$color}55` : 'rgba(254,74,35,0.35)'};
+    }
   }
 
-  &:nth-of-type(2) {
-    border-radius: 12px 6px 12px 6px;
-  }
-
-  &:nth-of-type(3) {
-    border-radius: 6px 12px 6px 12px;
-  }
-
-  &:nth-of-type(4) {
-    border-radius: 12px 6px 12px 6px;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(254, 74, 35, 0.3);
-    background-image: linear-gradient(
-      45deg,
-      ${props => props.bgColor || '#FE4A23'} 0%,
-      ${props => props.bgColor ? `${props.bgColor}dd` : '#ff6b4a'} 100%
-    );
+  &:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
   }
 
   @media (max-width: 768px) {
-    padding: 0.4rem 0.8rem;
+    padding: 0.38rem 0.8rem;
     font-size: 0.9em;
   }
 `;
 
 const Arrow = styled.span`
-  font-size: 0.8em;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  margin-left: 0.3rem;
-  
-  &::before {
-    content: '➜';
-    transform: scale(1.2);
-    display: inline-block;
-    font-weight: 900;
-    -webkit-text-stroke: 1px #131313;
-  }
-  
+  font-size: 0.82em;
+
+  &::before { content: '➜'; }
+
   ${Tag}:hover & {
-    animation: arrowBounce 0.6s infinite;
+    animation: bounce 0.55s infinite;
   }
-  
-  @keyframes arrowBounce {
-    0% {
-      transform: translateX(0) scale(1.2);
-    }
-    50% {
-      transform: translateX(2px) scale(1.3);
-    }
-    100% {
-      transform: translateX(0) scale(1.2);
-    }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50%       { transform: translateX(3px); }
   }
 `;
 
-const MobileLineBreak = styled.br`
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: block;
-  }
+/* ── tagline ── */
+
+const Tagline = styled(motion.p)`
+  margin-top: 1.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #383838;
 `;
+
+/* ── scroll indicator ── */
 
 const ScrollIndicator = styled(motion.div)`
   position: absolute;
@@ -167,167 +158,123 @@ const ScrollIndicator = styled(motion.div)`
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-  
-  &:hover {
-    opacity: 1;
-  }
-  
-  .scroll-icon {
-    width: 30px;
-    height: 50px;
-    border: 2px solid #fdfbfb;
-    border-radius: 25px;
+  opacity: 0.5;
+  transition: opacity 0.25s ease;
+
+  &:hover { opacity: 0.9; }
+
+  .track {
+    width: 26px;
+    height: 44px;
+    border: 1.5px solid rgba(253,251,251,0.4);
+    border-radius: 20px;
     position: relative;
-    
+
     &::before {
       content: '';
       position: absolute;
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       background: #fdfbfb;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 8px;
       border-radius: 50%;
-      animation: scrollAnim 2s infinite;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      width: 4px;
-      height: 10px;
-      background: rgba(253, 251, 251, 0.3);
       left: 50%;
       transform: translateX(-50%);
-      bottom: 8px;
-      border-radius: 2px;
-    }
-  }
-
-  @keyframes scrollAnim {
-    0% { 
-      top: 8px; 
-      opacity: 1;
-      transform: translateX(-50%) scale(1);
-    }
-    50% {
-      transform: translateX(-50%) scale(1.2);
-    }
-    100% { 
-      top: 32px; 
-      opacity: 0;
-      transform: translateX(-50%) scale(1);
+      top: 7px;
+      animation: ${scrollBounce} 1.8s infinite;
     }
   }
 `;
 
+/* ── stagger variants ── */
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.11 } },
+};
+
+const lineVariants = {
+  hidden:  { opacity: 0, y: 20, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] } },
+};
+
+/* ── component ── */
+
 const Intro = () => {
   const navigate = useNavigate();
 
-  const handleNavigation = (section) => {
-    if (section === 'linkedin') {
-      window.open('https://www.linkedin.com/in/abraham-huacchillo/', '_blank');
-      return;
-    }
+  const go = (section) => {
+    if (section === 'linkedin') { window.open('https://www.linkedin.com/in/abraham-huacchillo/', '_blank'); return; }
+    if (section === 'github')   { window.open('https://github.com/jarbram', '_blank'); return; }
     navigate(`/${section}`);
   };
 
-  const scrollToNext = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    });
-  };
+  const scrollToNext = () => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
 
   return (
     <IntroSection>
-      <TextContainer>
-        <TextLine>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            HI, I'M{" "}
-            <Tag 
-              onClick={() => handleNavigation('about')}
-              bgColor="#F1C40F"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              style={{ marginLeft: '0.5rem' }}
-            >
-              ABRAHAM <Arrow />
-            </Tag>
-          </motion.div>
-        </TextLine>
-        
-        <TextLine>
-          I'M A <MobileLineBreak />
-          <Tag 
-            onClick={() => handleNavigation('tech-recruiter')}
-            bgColor="#4A90E2"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            TECH RECRUITER <Arrow />
+      <AmbientBg />
+      <TextContainer
+        as={motion.div}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* HI, I'M [ABRAHAM] */}
+        <Line variants={lineVariants}>
+          <Word>HI, I'M</Word>
+          <Tag $color="#F1C40F" onClick={() => go('about')}>
+            ABRAHAM <Arrow />
           </Tag>
-        </TextLine>
-        
-        <TextLine>
-          WHO KNOWS <MobileLineBreak />
-          <Tag 
-            onClick={() => handleNavigation('product')}
-            bgColor="#50C878"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            PRODUCT <Arrow />
-          </Tag>
-        </TextLine>
+        </Line>
 
-        <TextLine>
-          AND <MobileLineBreak />
-          <Tag 
-            onClick={() => handleNavigation('code')}
-            bgColor="#9B59B6"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
+        {/* I BUILD [PRODUCTS] */}
+        <Line variants={lineVariants}>
+          <Word>I BUILD</Word>
+          <Tag $color="#50C878" $alt onClick={() => go('product')}>
+            PRODUCTS <Arrow />
+          </Tag>
+        </Line>
+
+        {/* WITH [AI] AND [CODE] */}
+        <Line variants={lineVariants}>
+          <Word>WITH</Word>
+          <Tag $color="#FE4A23" onClick={() => go('github')}>
+            AI <Arrow />
+          </Tag>
+          <Word>&amp;</Word>
+          <Tag $color="#9B59B6" $alt onClick={() => go('code')}>
             CODE <Arrow />
           </Tag>
-        </TextLine>
+        </Line>
 
-        <TextLine style={{ marginTop: '1rem' }}>
-          <Tag 
-            onClick={() => handleNavigation('linkedin')}
-            bgColor="#0077B5"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 1.0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* [LET'S CONNECT!] */}
+        <Line variants={lineVariants} style={{ marginTop: '0.6rem' }}>
+          <Tag
+            $color="#0077B5"
+            onClick={() => go('linkedin')}
+            whileTap={{ scale: 0.96 }}
           >
-            LET'S CONNECT! <Arrow />
+            LET'S CONNECT <Arrow />
           </Tag>
-        </TextLine>
+        </Line>
+
+        <Tagline
+          variants={lineVariants}
+        >
+          AI Ops Specialist · Product Builder · Peru
+        </Tagline>
       </TextContainer>
+
       <ScrollIndicator
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2 }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 0.5, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
         onClick={scrollToNext}
       >
-        <div className="scroll-icon" />
+        <div className="track" />
       </ScrollIndicator>
     </IntroSection>
   );
 };
 
-export default Intro; 
+export default Intro;

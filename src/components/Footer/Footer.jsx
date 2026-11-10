@@ -1,320 +1,278 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useState } from 'react';
 import WeatherMood from './WeatherMood';
 import TicTacToe from './TicTacToe';
 
-const FooterSection = styled.footer`
-  background: var(--background);
-  padding: 3rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-  min-height: 200px;
+/* ── animations ── */
 
-  @media (max-width: 768px) {
-    flex-direction: column;
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+`;
+
+/* ── layout ── */
+
+const FooterWrap = styled.footer`
+  border-top: 1px solid #1e1e1e;
+  padding: 3rem 2rem 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: start;
+  position: relative;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.2rem 2rem;
     gap: 2rem;
-    padding: 2rem;
-    align-items: center;
-    text-align: center;
   }
 `;
 
-const Column = styled.div`
+/* ── left column ── */
+
+const LeftCol = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  position: relative;
-  z-index: 15;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    align-items: center;
-  }
+  gap: 0.6rem;
 `;
 
-const Year = styled.div`
-  font-family: "Buzz Black", sans-serif;
-  font-size: 1rem;
-  color: #888;
-  margin-bottom: 0.5rem;
-  
-  &::after {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 1px;
-    background: #888;
-    margin-top: 6px;
+const BrandName = styled.p`
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fdfbfb;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 
-    @media (max-width: 768px) {
-      margin: 6px auto 0;
-    }
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.1rem;
-  }
+  span { color: #FE4A23; }
 `;
 
-const Info = styled.div`
-  color: #888;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: white;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const SocialLink = styled.a`
-  color: #666;
-  text-decoration: none;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
-  padding: 4px 0;
-  font-family: monospace;
-
-  &:hover {
-    color: #50fa7b;
-    transform: translateX(3px);
-  }
-
-  &::before {
-    content: '›';
-    opacity: 0;
-    transition: all 0.2s ease;
-    position: absolute;
-    left: -12px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.95rem;
-  }
-`;
-
-const ConnectColumn = styled(Column)`
-  text-align: left;
-  min-width: 200px;
-  
-  @media (max-width: 768px) {
-    text-align: center;
-    width: 100%;
-    align-items: center;
-    
-    ${SocialLink} {
-      justify-content: center;
-      width: auto;
-      padding: 8px 0;
-      border-bottom: none;
-      
-      &:hover {
-        transform: translateX(3px);
-        background: transparent;
-      }
-    }
-  }
-`;
-
-const ConnectTitle = styled.h3`
-  font-family: "Buzz Black", sans-serif;
-  font-size: 1rem;
-  color: #888;
-  margin-bottom: 1rem;
-  
-  &::after {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 1px;
-    background: #888;
-    margin-top: 6px;
-
-    @media (max-width: 768px) {
-      margin: 6px auto 0;
-    }
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.1rem;
-  }
-`;
-
-const NavColumn = styled(Column)`
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
-
-const NavLink = styled(SocialLink)`
+const Meta = styled.p`
   font-size: 0.75rem;
-  color: #888;
-
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-  }
+  color: #3a3a3a;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 `;
 
-const FooterDivider = styled.div`
-  height: 1px;
-  background: #333;
-  width: 100%;
-  margin: 2rem 0;
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
-// Agregamos un componente para animación de emojis
-const AnimatedEmoji = styled.span`
-  display: inline-block;
-  transition: transform 0.3s ease;
-  cursor: default;
-
-  &:hover {
-    transform: scale(1.4) rotate(10deg);
-  }
-`;
-
-// Agregamos un componente para el estado de ánimo
-const MoodInfo = styled(Info)`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const GameButton = styled(Info)`
-  cursor: pointer;
-  position: relative;
+const GameToggle = styled.button`
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 4px 8px;
-  margin-left: -8px;
-  transition: all 0.3s ease;
-  animation: ${props => !props.active ? 'pulse 2s infinite' : 'none'};
-  
-  @keyframes pulse {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    margin-left: 0;
-    justify-content: center;
-  }
-  
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: ${p => p.$active ? '#FE4A23' : '#383838'};
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color 0.2s ease;
+  animation: ${p => !p.$active ? pulse : 'none'} 2.5s infinite;
+
+  &:hover { color: #FE4A23; }
+
   &::before {
     content: '›';
-    opacity: ${props => props.active ? '1' : '0'};
-    transform: ${props => props.active ? 'translateX(0)' : 'translateX(-10px)'};
-    transition: all 0.3s ease;
-  }
-
-  &:hover {
-    color: #50fa7b;
-    transform: translateX(3px);
-    
-    &::before {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    transform: ${p => p.$active ? 'rotate(90deg)' : 'none'};
+    transition: transform 0.2s ease;
+    display: inline-block;
   }
 `;
 
 const GameStats = styled.span`
-  color: #666;
-  font-family: monospace;
-  transition: color 0.3s ease;
-  
-  ${GameButton}:hover & {
-    color: #50fa7b;
-  }
+  color: #333;
+  font-size: 0.65rem;
+`;
 
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
+/* ── center column (game) ── */
+
+const CenterCol = styled.div`
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 
+/* ── right column ── */
+
+const RightCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+
+  @media (max-width: 600px) {
+    align-items: flex-start;
+  }
+`;
+
+const HireBtn = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FE4A23;
+  color: #131313;
+  font-weight: 900;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px 12px 6px 12px;
+  text-decoration: none;
+  margin-bottom: 0.6rem;
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.18s ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(254,74,35,0.3);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
+  }
+`;
+
+const SocialRow = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  width: 180px;
+  padding: 0.65rem 0.9rem;
+  color: #444;
+  text-decoration: none;
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  transition: color 0.18s ease, border-color 0.18s ease, transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: #fdfbfb;
+      border-color: #303030;
+      transform: translateX(-3px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  @media (max-width: 600px) {
+    width: 100%;
+
+    &:hover { transform: translateX(3px); }
+  }
+`;
+
+const SocialLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+`;
+
+/* ── icons ── */
+
+const ArrowIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+);
+
+const IconLinkedIn = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+  </svg>
+);
+
+const IconInstagram = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 7.082c1.602 0 1.792.006 2.425.035 1.627.074 2.385.845 2.46 2.459.028.633.034.822.034 2.424s-.006 1.792-.034 2.424c-.075 1.613-.832 2.386-2.46 2.46-.633.028-.822.035-2.425.035-1.602 0-1.792-.006-2.424-.035-1.63-.075-2.385-.849-2.46-2.46-.028-.632-.035-.822-.035-2.424s.007-1.792.035-2.424c.074-1.615.832-2.386 2.46-2.46.632-.029.822-.034 2.424-.034zm0-1.082c-1.63 0-1.833.007-2.474.037-2.18.1-3.39 1.309-3.49 3.489-.029.641-.036.845-.036 2.474 0 1.63.007 1.834.036 2.474.1 2.179 1.31 3.39 3.49 3.49.641.029.844.036 2.474.036 1.63 0 1.834-.007 2.475-.036 2.176-.1 3.391-1.309 3.489-3.49.029-.64.036-.844.036-2.474 0-1.629-.007-1.833-.036-2.474-.098-2.177-1.309-3.39-3.489-3.489-.641-.03-.845-.037-2.475-.037zm0 2.919c-1.701 0-3.081 1.379-3.081 3.081s1.38 3.081 3.081 3.081 3.081-1.379 3.081-3.081c0-1.701-1.38-3.081-3.081-3.081zm0 5.081c-1.105 0-2-.895-2-2 0-1.104.895-2 2-2 1.104 0 2.001.895 2.001 2s-.897 2-2.001 2zm3.202-5.922c-.397 0-.72.322-.72.72 0 .397.322.72.72.72.398 0 .721-.322.721-.72 0-.398-.322-.72-.721-.72z"/>
+  </svg>
+);
+
+const IconGitHub = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+  </svg>
+);
+
+/* ── component ── */
+
+const SOCIALS = [
+  { label: 'LinkedIn',  href: 'https://linkedin.com/in/abraham-huacchillo', icon: <IconLinkedIn />  },
+  { label: 'Instagram', href: 'https://instagram.com/abrahamhuacchillo',    icon: <IconInstagram /> },
+  { label: 'GitHub',    href: 'https://github.com/jarbram',                 icon: <IconGitHub />    },
+];
+
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
   const [showGame, setShowGame] = useState(false);
-  const [gameWins, setGameWins] = useState({ X: 0, O: 0 });
+  const [wins, setWins]         = useState({ X: 0, O: 0 });
 
   const handleGameEnd = (winner) => {
-    if (winner) {
-      setGameWins(prev => ({
-        ...prev,
-        [winner]: prev[winner] + 1
-      }));
-    }
+    if (winner) setWins(p => ({ ...p, [winner]: p[winner] + 1 }));
   };
 
   return (
-    <FooterSection>
-      <Column>
-        <Year>© {currentYear}</Year>
+    <FooterWrap>
+
+      {/* left */}
+      <LeftCol>
+        <BrandName>Jarbram<span>.</span></BrandName>
+        <Meta>© {year} · AI Ops Specialist & Product Builder</Meta>
         <WeatherMood />
-        <GameButton 
-          active={showGame}
-          onClick={() => setShowGame(!showGame)}
+        <GameToggle
+          $active={showGame}
+          onClick={() => setShowGame(p => !p)}
         >
-          {showGame ? '[ game in progress ]' : '[ start game ]'}
-          {(gameWins.X > 0 || gameWins.O > 0) && (
-            <GameStats>
-              · wins X:{gameWins.X} O:{gameWins.O}
-            </GameStats>
+          {showGame ? 'game in progress' : 'start game'}
+          {(wins.X > 0 || wins.O > 0) && (
+            <GameStats>· X:{wins.X} O:{wins.O}</GameStats>
           )}
-        </GameButton>
-      </Column>
+        </GameToggle>
+      </LeftCol>
 
-      <TicTacToe show={showGame} onGameEnd={handleGameEnd} />
+      {/* center — game */}
+      <CenterCol>
+        <TicTacToe show={showGame} onGameEnd={handleGameEnd} />
+      </CenterCol>
 
-      <FooterDivider />
+      {/* right */}
+      <RightCol>
+        <HireBtn href="mailto:huacchillocastillo@gmail.com">
+          Work with me ➜
+        </HireBtn>
+        {SOCIALS.map(s => (
+          <SocialRow key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
+            <SocialLeft>
+              {s.icon}
+              {s.label}
+            </SocialLeft>
+            <ArrowIcon />
+          </SocialRow>
+        ))}
+      </RightCol>
 
-      <ConnectColumn>
-        <ConnectTitle>@ CONNECT</ConnectTitle>
-        <SocialLink 
-          href="https://linkedin.com/in/abraham-huacchillo" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          LINKEDIN
-        </SocialLink>
-        <SocialLink 
-          href="https://instagram.com/abrahamhuacchillo" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          INSTAGRAM
-        </SocialLink>
-        <SocialLink 
-          href="https://github.com/jarbram" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          GITHUB
-        </SocialLink>
-      </ConnectColumn>
-    </FooterSection>
+    </FooterWrap>
   );
 };
 
-export default Footer; 
+export default Footer;
