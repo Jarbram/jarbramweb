@@ -36,7 +36,7 @@ Tres familias OFL, alojadas en `/public/fonts` (woff2 variables, sin CDN):
 | Rol | Familia | Token |
 |---|---|---|
 | Display (h1–h4) | Bricolage Grotesque 700–800 | `--font-display` |
-| Texto | Geist 400–600 | `--font-text` |
+| Texto | Instrument Sans 400–700 | `--font-text` |
 | Código / datos | JetBrains Mono | `--font-mono` |
 
 - Títulos en mayúsculas con `letter-spacing: -0.02em` y `text-wrap: balance`.

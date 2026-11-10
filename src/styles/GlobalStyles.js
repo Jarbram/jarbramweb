@@ -9,9 +9,9 @@ const GlobalStyles = createGlobalStyle`
     font-display: swap;
   }
   @font-face {
-    font-family: 'Geist';
-    src: url('/fonts/geist.woff2') format('woff2');
-    font-weight: 100 900;
+    font-family: 'Instrument Sans';
+    src: url('/fonts/instrument-sans.woff2') format('woff2');
+    font-weight: 400 700;
     font-display: swap;
   }
   @font-face {
@@ -57,7 +57,7 @@ const GlobalStyles = createGlobalStyle`
 
     /* Tipografía */
     --font-display: 'Bricolage Grotesque', 'Arial Narrow', sans-serif;
-    --font-text: 'Geist', system-ui, sans-serif;
+    --font-text: 'Instrument Sans', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     /* Forma */
