@@ -18,7 +18,7 @@ const HeroSection = styled.div`
 
 const Title = styled(motion.h1)`
   font-size: 3.5rem;
-  color: #fdfbfb;
+  color: var(--ink);
   margin-bottom: 2rem;
   
   @media (max-width: 768px) {
@@ -44,15 +44,15 @@ const ChatMessage = styled(motion.div)`
   padding: 0.5rem 1.5rem;
   margin: 0.3rem 0;
   border-radius: 20px;
-  font-family: "Buzz Black", sans-serif;
+  font-family: var(--font-display);
   font-weight: 500;
   line-height: 1.6;
   font-size: 1.1rem;
   letter-spacing: 0.02em;
   
   ${props => props.isUser ? `
-    background: #fdfbfb;
-    color: #131313;
+    background: var(--ink);
+    color: var(--bg);
     align-self: flex-start;
     border-bottom-left-radius: 5px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -64,7 +64,7 @@ const ChatMessage = styled(motion.div)`
     }
   ` : `
     background: linear-gradient(135deg, #4A90E2, #45B7D1);
-    color: #fdfbfb;
+    color: var(--ink);
     align-self: flex-end;
     border-bottom-right-radius: 5px;
     box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
@@ -85,7 +85,7 @@ const ActionButton = styled(motion.a)`
   font-weight: bold;
   margin: 1rem;
   transition: transform 0.3s ease;
-  color: #fdfbfb;
+  color: var(--ink);
 
   ${props => props.variant === 'talentcross' ? `
     background: linear-gradient(135deg, rgb(25, 230, 168), rgb(20, 184, 134));
@@ -114,7 +114,7 @@ const QuotesSection = styled.div`
   text-align: center;
   margin: 3rem auto 4rem;
   max-width: 800px;
-  color: #fdfbfb;
+  color: var(--ink);
   padding: 0 1rem;
 `;
 
@@ -134,7 +134,7 @@ const QuoteItem = styled(motion.div)`
   width: 100%;
   text-align: left;
   font-size: 1.5rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   color: rgb(25, 230, 168);
   padding: 0 2rem;
   

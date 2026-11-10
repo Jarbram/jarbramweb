@@ -13,7 +13,7 @@ const pulse = keyframes`
 /* ── layout ── */
 
 const FooterWrap = styled.footer`
-  border-top: 1px solid #1e1e1e;
+  border-top: 1px solid var(--surface-2);
   padding: 3rem 2rem 2.5rem;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -43,7 +43,7 @@ const LeftCol = styled.div`
 const BrandName = styled.p`
   font-size: 1.1rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 
@@ -75,7 +75,7 @@ const GameToggle = styled.button`
   transition: color 0.2s ease;
   animation: ${p => !p.$active ? pulse : 'none'} 2.5s infinite;
 
-  &:hover { color: #FE4A23; }
+  &:hover { color: var(--accent); }
 
   &::before {
     content: '›';
@@ -118,8 +118,8 @@ const HireBtn = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: #FE4A23;
-  color: #131313;
+  background: var(--accent);
+  color: var(--bg);
   font-weight: 900;
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -152,7 +152,7 @@ const SocialRow = styled.a`
   padding: 0.65rem 0.9rem;
   color: #444;
   text-decoration: none;
-  background: #161616;
+  background: var(--surface-1);
   border: 1px solid #222;
   border-radius: 10px;
   font-size: 0.75rem;
@@ -163,8 +163,8 @@ const SocialRow = styled.a`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      color: #fdfbfb;
-      border-color: #303030;
+      color: var(--ink);
+      border-color: var(--line);
       transform: translateX(-3px);
     }
   }

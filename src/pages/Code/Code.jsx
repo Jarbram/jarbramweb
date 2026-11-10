@@ -56,19 +56,19 @@ const HeroLabel = styled.p`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #9B59B6;
+  color: var(--code);
   margin-bottom: 0.8rem;
 `;
 
 const HeroTitle = styled(motion.h1)`
   font-size: clamp(2rem, 5vw, 3.2rem);
-  color: #fdfbfb;
+  color: var(--ink);
   font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   margin-bottom: 1rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
 `;
 
 const HeroSub = styled(motion.p)`
@@ -82,14 +82,14 @@ const HeroSub = styled(motion.p)`
 /* ── quote strip ── */
 
 const QuoteStrip = styled.div`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 12px;
   padding: 1rem 1.4rem;
   margin-bottom: 3rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.88rem;
-  color: #9B59B6;
+  color: var(--code);
   min-height: 52px;
   display: flex;
   align-items: center;
@@ -102,7 +102,7 @@ const Cursor = styled.span`
   display: inline-block;
   width: 8px;
   height: 0.9em;
-  background: #9B59B6;
+  background: var(--code);
   vertical-align: middle;
   margin-left: 2px;
   animation: ${blink} 0.9s infinite;
@@ -111,8 +111,8 @@ const Cursor = styled.span`
 /* ── chat card ── */
 
 const ChatCard = styled(motion.div)`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -120,7 +120,7 @@ const ChatCard = styled(motion.div)`
 
 const ChatTopBar = styled.div`
   padding: 0.9rem 1.4rem;
-  background: #1b1b1b;
+  background: var(--surface-2);
   border-bottom: 1px solid #222;
   font-size: 0.72rem;
   font-weight: 900;
@@ -146,8 +146,8 @@ const MsgMeta = styled.span`
 `;
 
 const Q = styled.div`
-  background: #efefef;
-  color: #131313;
+  background: var(--ink);
+  color: var(--bg);
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
   border-bottom-left-radius: 4px;
@@ -159,7 +159,7 @@ const Q = styled.div`
 `;
 
 const A = styled.div`
-  background: linear-gradient(135deg, #FE4A23, #ff6340);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -186,8 +186,8 @@ const Grid = styled.div`
 `;
 
 const Card = styled(motion.div)`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 20px;
   padding: 1.5rem;
 `;
@@ -229,24 +229,24 @@ const Badge = styled.span`
   letter-spacing: 0.05em;
   padding: 0.28rem 0.65rem;
   border-radius: 6px;
-  background: #1c1c1c;
+  background: var(--surface-2);
   color: #888;
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--line);
 `;
 
 const GitHubCard = styled(motion.a)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 20px;
   padding: 1.4rem 1.6rem;
   text-decoration: none;
   transition: border-color 0.25s ease, background 0.25s ease;
 
   &:hover {
-    border-color: #FE4A23;
+    border-color: var(--accent);
     background: #191919;
   }
 `;
@@ -268,7 +268,7 @@ const GitHubLabel = styled.span`
 const GitHubTitle = styled.span`
   font-size: 1rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 `;

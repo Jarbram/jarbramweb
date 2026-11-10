@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { reveal, hoverLift, ease } from '../../styles/motion';
 import { useState } from 'react';
 import Header from '../Header/Header';
 import { NavLink } from 'react-router-dom';
@@ -50,9 +51,15 @@ const CardList = styled.div`
 /* ── Project card ── */
 
 const ProjectCard = styled(motion.div)`
-  background: #161616;
-  border-radius: 20px;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-3);
+  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+
+  &:hover {
+    border-color: var(--line-strong);
+    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  }
   padding: 1.4rem;
   display: flex;
   flex-direction: column;
@@ -63,8 +70,8 @@ const ProjectHeader = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  background: #1b1b1b;
-  border: 1px solid #252525;
+  background: var(--surface-2);
+  border: 1px solid var(--surface-3);
   border-radius: 14px;
   padding: 1rem 1.1rem;
 `;
@@ -86,7 +93,7 @@ const ProjectLogo = styled.img`
 const ProjectTitle = styled.h3`
   font-size: 1rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 `;
@@ -144,8 +151,8 @@ const MsgMeta = styled.span`
 `;
 
 const QuestionBubble = styled.div`
-  background: #efefef;
-  color: #131313;
+  background: var(--ink);
+  color: var(--bg);
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
   border-bottom-left-radius: 4px;
@@ -157,7 +164,7 @@ const QuestionBubble = styled.div`
 `;
 
 const ResponseBubble = styled.div`
-  background: linear-gradient(135deg, #FE4A23 0%, #ff6340 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -183,7 +190,7 @@ const SliderImage = styled(motion.img)`
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: #1b1b1b;
+  background: var(--surface-2);
   transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 `;
 
@@ -321,7 +328,7 @@ const CTALabel = styled.p`
   font-size: 1.1rem;
   font-weight: 900;
   text-transform: uppercase;
-  color: #fdfbfb;
+  color: var(--ink);
   letter-spacing: 0.02em;
 `;
 
@@ -343,7 +350,7 @@ const CTAButton = styled(NavLink)`
   align-items: center;
   gap: 0.4rem;
   background-color: ${props => props.$color || '#4A90E2'};
-  color: #131313;
+  color: var(--bg);
   font-weight: 900;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -394,10 +401,7 @@ const IconClose = () => (
 
 /* ── Card animation variants ── */
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 24, scale: 0.98 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] } },
-};
+const cardVariants = reveal;
 
 /* ── Component ── */
 
@@ -418,7 +422,7 @@ const Projects = () => {
       ],
       images: ["/subastop-1.webp","/subastop-2.webp","/subastop-3.webp","/subastop-4.webp","/subastop-5.webp","/subastop-6.webp"],
       description: "VMC sells cars at auction across Peru. Support, content and tooling all had to move faster — without a new team for each.",
-      response: "I build the AI layer: a buyer help center, Subastín our support chatbot, a video studio and the Concorde design system.",
+      response: "I build the AI layer: the new VMC home, Prisma (our video studio), the buyer help center, Subastín and the Concorde design system.",
       additionalResponses: [
         "Where does it all run?",
         "Live at vmcsubastas.com",
@@ -587,6 +591,7 @@ const Projects = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-60px' }}
+              whileHover={hoverLift}
             >
               {/* Header */}
               <ProjectHeader>
@@ -619,12 +624,18 @@ const Projects = () => {
                   onTouchStart={handleTouchStart}
                   onTouchEnd={(e) => handleTouchEnd(e, project.id)}
                 >
-                  <SliderImage
-                    src={project.images[currentSlides[project.id] || 0]}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4 }}
-                  />
+                  <AnimatePresence initial={false}>
+                    <SliderImage
+                      key={currentSlides[project.id] || 0}
+                      src={project.images[currentSlides[project.id] || 0]}
+                      alt={`${project.title} — captura ${(currentSlides[project.id] || 0) + 1}`}
+                      loading="lazy"
+                      initial={{ opacity: 0, scale: 1.02 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.45, ease }}
+                    />
+                  </AnimatePresence>
                   <ExpandBtn onClick={() => openModal(project.id, currentSlides[project.id] || 0)}>
                     <IconExpand />
                   </ExpandBtn>

@@ -32,10 +32,10 @@ const GameContainer = styled.div`
 
 const Cell = styled(motion.button)`
   aspect-ratio: 1;
-  background: #1a1a1a;
+  background: var(--surface-2);
   border: none;
   color: ${props => props.value === 'X' ? '#888' : '#666'};
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -43,7 +43,7 @@ const Cell = styled(motion.button)`
   overflow: hidden;
 
   &:hover {
-    background: #252525;
+    background: var(--surface-3);
   }
 
   &::before {

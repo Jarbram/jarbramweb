@@ -38,7 +38,7 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 `;
@@ -47,8 +47,8 @@ const GithubLink = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background-color: #FE4A23;
-  color: #131313;
+  background-color: var(--accent);
+  color: var(--bg);
   font-weight: 900;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -77,8 +77,8 @@ const Grid = styled.div`
 `;
 
 const Card = styled(motion.div)`
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1.4rem;
   display: flex;
@@ -87,7 +87,7 @@ const Card = styled(motion.div)`
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #FE4A23;
+    border-color: var(--accent);
   }
 `;
 
@@ -101,7 +101,7 @@ const CardTop = styled.div`
 const RepoName = styled.h3`
   font-size: 1rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.03em;
   line-height: 1.2;
@@ -138,8 +138,8 @@ const TopicTag = styled.span`
   letter-spacing: 0.05em;
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
-  background: #252525;
-  color: #FE4A23;
+  background: var(--surface-3);
+  color: var(--accent);
   border: 1px solid #333;
 `;
 
@@ -149,7 +149,7 @@ const CardBottom = styled.div`
   justify-content: space-between;
   margin-top: auto;
   padding-top: 0.6rem;
-  border-top: 1px solid #252525;
+  border-top: 1px solid var(--surface-3);
 `;
 
 const LangBadge = styled.span`
@@ -193,8 +193,8 @@ const CardLink = styled.a`
 `;
 
 const SkeletonCard = styled.div`
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1.4rem;
   height: 180px;
@@ -205,7 +205,7 @@ const SkeletonLine = styled.div`
   width: ${props => props.w || '100%'};
   border-radius: 4px;
   margin-bottom: ${props => props.mb || '0.6rem'};
-  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background: linear-gradient(90deg, #222 25%, var(--line) 50%, #222 75%);
   background-size: 400px 100%;
   animation: ${shimmer} 1.4s infinite linear;
 `;

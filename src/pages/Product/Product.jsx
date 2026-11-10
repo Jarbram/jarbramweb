@@ -56,13 +56,13 @@ const HeroLabel = styled.p`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #50C878;
+  color: var(--product);
   margin-bottom: 0.8rem;
 `;
 
 const HeroTitle = styled(motion.h1)`
   font-size: clamp(2rem, 5vw, 3.2rem);
-  color: #fdfbfb;
+  color: var(--ink);
   font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
@@ -81,14 +81,14 @@ const HeroSub = styled(motion.p)`
 /* ── quote strip ── */
 
 const QuoteStrip = styled.div`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 12px;
   padding: 1rem 1.4rem;
   margin-bottom: 3rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.88rem;
-  color: #FE4A23;
+  color: var(--accent);
   min-height: 52px;
   display: flex;
   align-items: center;
@@ -101,7 +101,7 @@ const Cursor = styled.span`
   display: inline-block;
   width: 8px;
   height: 0.9em;
-  background: #FE4A23;
+  background: var(--accent);
   vertical-align: middle;
   margin-left: 2px;
   animation: ${blink} 0.9s infinite;
@@ -110,8 +110,8 @@ const Cursor = styled.span`
 /* ── chat card ── */
 
 const ChatCard = styled(motion.div)`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -119,7 +119,7 @@ const ChatCard = styled(motion.div)`
 
 const ChatTopBar = styled.div`
   padding: 0.9rem 1.4rem;
-  background: #1b1b1b;
+  background: var(--surface-2);
   border-bottom: 1px solid #222;
   font-size: 0.72rem;
   font-weight: 900;
@@ -145,8 +145,8 @@ const MsgMeta = styled.span`
 `;
 
 const Q = styled.div`
-  background: #efefef;
-  color: #131313;
+  background: var(--ink);
+  color: var(--bg);
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
   border-bottom-left-radius: 4px;
@@ -158,7 +158,7 @@ const Q = styled.div`
 `;
 
 const A = styled.div`
-  background: linear-gradient(135deg, #FE4A23, #ff6340);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #fff;
   padding: 0.75rem 1.1rem;
   border-radius: 16px;
@@ -184,8 +184,8 @@ const Grid = styled.div`
 `;
 
 const Card = styled(motion.div)`
-  background: #161616;
-  border: 1px solid #232323;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
   border-radius: 20px;
   padding: 1.5rem;
 `;
@@ -219,7 +219,7 @@ const StepNum = styled.span`
   justify-content: center;
   border-radius: 6px;
   background: rgba(254,74,35,0.1);
-  color: #FE4A23;
+  color: var(--accent);
   border: 1px solid rgba(254,74,35,0.18);
   letter-spacing: 0;
 `;
@@ -227,7 +227,7 @@ const StepNum = styled.span`
 const StepText = styled.div`
   h4 {
     font-size: 0.88rem;
-    color: #fdfbfb;
+    color: var(--ink);
     font-weight: 700;
     margin-bottom: 0.3rem;
   }
@@ -243,7 +243,7 @@ const StatRow = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 0;
-  border-bottom: 1px solid #1e1e1e;
+  border-bottom: 1px solid var(--surface-2);
 
   &:last-child { border-bottom: none; padding-bottom: 0; }
   &:first-child { padding-top: 0; }
@@ -258,7 +258,7 @@ const StatLabel = styled.span`
 const StatValue = styled.span`
   font-size: 1rem;
   font-weight: 900;
-  color: #50C878;
+  color: var(--product);
 `;
 
 /* ── component ── */

@@ -71,7 +71,7 @@ const Line = styled(motion.div)`
   flex-wrap: wrap;
   font-size: clamp(1.6rem, 4.5vw, 2.8rem);
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.025em;
   line-height: 1;
@@ -89,7 +89,7 @@ const Word = styled.span`
 
 const Tag = styled(motion.button)`
   background-color: ${p => p.$color || '#FE4A23'};
-  color: #131313;
+  color: var(--bg);
   border: none;
   cursor: pointer;
   font-family: inherit;
@@ -147,7 +147,7 @@ const Tagline = styled(motion.p)`
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #383838;
+  color: var(--line-strong);
 `;
 
 /* ── scroll indicator ── */
@@ -175,7 +175,7 @@ const ScrollIndicator = styled(motion.div)`
       position: absolute;
       width: 5px;
       height: 5px;
-      background: #fdfbfb;
+      background: var(--ink);
       border-radius: 50%;
       left: 50%;
       transform: translateX(-50%);

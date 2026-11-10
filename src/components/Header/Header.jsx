@@ -16,7 +16,8 @@ const HeaderContainer = styled.header`
   z-index: 1000;
   background: ${p => p.$scrolled ? 'rgba(19,19,19,0.88)' : 'transparent'};
   backdrop-filter: ${p => p.$scrolled ? 'blur(14px)' : 'none'};
-  border-bottom: 1px solid ${p => p.$scrolled ? '#232323' : 'transparent'};
+  border-bottom: 1px solid ${p => p.$scrolled ? 'var(--surface-3)' : 'transparent'};
+  transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
   transition: background 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease;
 
   @media (max-width: 768px) {
@@ -29,7 +30,7 @@ const HeaderContainer = styled.header`
 const Logo = styled(Link)`
   font-size: 1.4rem;
   font-weight: 900;
-  color: #fdfbfb;
+  color: var(--ink);
   text-decoration: none;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -38,7 +39,7 @@ const Logo = styled(Link)`
   &:hover { opacity: 0.75; }
 
   .dot {
-    color: #FE4A23;
+    color: var(--accent);
     display: inline-block;
   }
 `;
@@ -57,8 +58,8 @@ const Nav = styled.nav`
     right: ${p => p.$open ? '0' : '-100%'};
     width: 240px;
     height: 100vh;
-    background: #161616;
-    border-left: 1px solid #232323;
+    background: var(--surface-1);
+    border-left: 1px solid var(--surface-3);
     padding: 5rem 1.4rem 2rem;
     transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
@@ -130,22 +131,22 @@ const Hamburger = styled.button`
   gap: 5px;
   width: 36px;
   height: 36px;
-  background: #1b1b1b;
-  border: 1px solid #2a2a2a;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
   padding: 0 8px;
   z-index: 1001;
   transition: border-color 0.2s ease;
 
-  &:hover { border-color: #404040; }
+  &:hover { border-color: var(--line-strong); }
 
   @media (max-width: 768px) { display: flex; }
 
   span {
     display: block;
     height: 2px;
-    background: #fdfbfb;
+    background: var(--ink);
     border-radius: 2px;
     transition: transform 0.28s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.28s ease;
 
@@ -176,9 +177,12 @@ const Header = () => {
   const location                  = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    // ponytail: el scroll vive en #root (body es fixed), no en window
+    const root = document.getElementById('root');
+    const onScroll = () => setScrolled(root.scrollTop > 24);
+    onScroll();
+    root.addEventListener('scroll', onScroll, { passive: true });
+    return () => root.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {

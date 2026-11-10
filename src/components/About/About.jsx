@@ -46,9 +46,9 @@ const ContentContainer = styled.div`
 /* ── Left column: chat ── */
 
 const ChatCard = styled(motion.div)`
-  background: #161616;
+  background: var(--surface-1);
   border-radius: 20px;
-  border: 1px solid #232323;
+  border: 1px solid var(--surface-3);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -59,7 +59,7 @@ const ChatTopBar = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.4rem;
-  background: #1b1b1b;
+  background: var(--surface-2);
   border-bottom: 1px solid #222;
 `;
 
@@ -74,7 +74,7 @@ const Avatar = styled.img`
   border-radius: 10px;
   object-fit: cover;
   display: block;
-  border: 1.5px solid #2a2a2a;
+  border: 1.5px solid var(--line);
 `;
 
 const OnlineDot = styled.span`
@@ -83,9 +83,9 @@ const OnlineDot = styled.span`
   right: -2px;
   width: 11px;
   height: 11px;
-  background: #50C878;
+  background: var(--product);
   border-radius: 50%;
-  border: 2px solid #1b1b1b;
+  border: 2px solid var(--surface-2);
   animation: ${pulseGreen} 2.5s infinite;
 `;
 
@@ -93,7 +93,7 @@ const ChatMeta = styled.div``;
 
 const ChatName = styled.h1`
   font-size: 0.95rem;
-  color: #fdfbfb;
+  color: var(--ink);
   font-weight: 800;
   margin-bottom: 0.15rem;
   letter-spacing: 0.01em;
@@ -130,8 +130,8 @@ const MsgMeta = styled.span`
 `;
 
 const QuestionBubble = styled.div`
-  background: #efefef;
-  color: #131313;
+  background: var(--ink);
+  color: var(--bg);
   padding: 0.8rem 1.1rem;
   border-radius: 16px;
   border-bottom-left-radius: 4px;
@@ -144,7 +144,7 @@ const QuestionBubble = styled.div`
 `;
 
 const AnswerBubble = styled.div`
-  background: linear-gradient(135deg, #FE4A23 0%, #ff6340 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
   color: #fff;
   padding: 0.8rem 1.1rem;
   border-radius: 16px;
@@ -188,9 +188,9 @@ const InfoColumn = styled.div`
 `;
 
 const InfoCard = styled(motion.div)`
-  background: #161616;
+  background: var(--surface-1);
   border-radius: 20px;
-  border: 1px solid #232323;
+  border: 1px solid var(--surface-3);
   padding: 1.4rem;
 `;
 
@@ -231,7 +231,7 @@ const RoleInfo = styled.div`
 
 const RoleTitle = styled.h4`
   font-size: 0.88rem;
-  color: #fdfbfb;
+  color: var(--ink);
   font-weight: 700;
   letter-spacing: 0.01em;
 `;
@@ -252,7 +252,7 @@ const NowBadge = styled.span`
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #50C878;
+  color: var(--product);
   background: rgba(80,200,120,0.1);
   padding: 0.18rem 0.45rem;
   border-radius: 4px;
@@ -269,9 +269,9 @@ const SocialLink = styled(motion.a)`
   padding: 0.8rem 1rem;
   color: #555;
   text-decoration: none;
-  background: #1c1c1c;
+  background: var(--surface-2);
   border-radius: 12px;
-  border: 1px solid #252525;
+  border: 1px solid var(--surface-3);
   margin-bottom: 0.55rem;
   font-size: 0.78rem;
   font-weight: 800;
@@ -282,9 +282,9 @@ const SocialLink = styled(motion.a)`
   &:last-child { margin-bottom: 0; }
 
   &:hover {
-    color: #fdfbfb;
-    border-color: #303030;
-    background: #1e1e1e;
+    color: var(--ink);
+    border-color: var(--line);
+    background: var(--surface-2);
   }
 
   svg { width: 16px; height: 16px; flex-shrink: 0; }
