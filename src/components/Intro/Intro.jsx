@@ -5,6 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 /* ── animations ── */
 
+// Tipografía cinética: la fuente variable "gana peso" al entrar
+const weightIn = keyframes`
+  from { font-weight: 300; letter-spacing: 0.06em; }
+  to   { font-weight: 800; letter-spacing: -0.02em; }
+`;
+
 const scrollBounce = keyframes`
   0%   { top: 8px;  opacity: 1; transform: translateX(-50%) scale(1);   }
   50%  {            opacity: 1; transform: translateX(-50%) scale(1.15); }
@@ -70,12 +76,13 @@ const Line = styled(motion.div)`
   justify-content: center;
   gap: 0.7rem;
   flex-wrap: wrap;
-  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6.4vw, 5.2rem);
+  font-weight: 800;
   color: var(--ink);
   text-transform: uppercase;
-  letter-spacing: 0.025em;
-  line-height: 1;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
 
   @media (max-width: 480px) {
     gap: 0.45rem;
@@ -84,6 +91,48 @@ const Line = styled(motion.div)`
 
 const Word = styled.span`
   white-space: nowrap;
+  animation: ${weightIn} 1.1s var(--ease-out) both;
+  animation-delay: ${p => p.$d || 0}s;
+  transition: font-weight var(--dur-base) var(--ease-out);
+
+  @media (hover: hover) { &:hover { font-weight: 300; } }
+`;
+
+const Status = styled(motion.a)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.6rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--product);
+    box-shadow: 0 0 0 3px rgba(80,200,120,0.2);
+  }
+  &:hover { color: var(--ink); border-color: var(--ink-faint); }
+`;
+
+const Proof = styled(motion.ul)`
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.6rem;
+  margin-top: 2.2rem;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+
+  strong { font-family: var(--font-mono); color: var(--ink); font-weight: 600; margin-right: 0.35rem; }
 `;
 
 /* ── tag buttons ── */
@@ -94,9 +143,9 @@ const Tag = styled(motion.button)`
   border: none;
   cursor: pointer;
   font-family: inherit;
-  font-weight: 900;
+  font-weight: 800;
   font-size: inherit;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   padding: 0.45rem 1rem;
   display: inline-flex;
@@ -148,7 +197,7 @@ const Tagline = styled(motion.p)`
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--line-strong);
+  color: var(--ink-faint);
 `;
 
 /* ── scroll indicator ── */
@@ -227,6 +276,10 @@ const Intro = () => {
         initial="hidden"
         animate="visible"
       >
+        <Status variants={lineVariants} onClick={() => go('about')}>
+          Open to remote AI Ops roles · See my CV
+        </Status>
+
         {/* HI, I'M [ABRAHAM] */}
         <Line variants={lineVariants}>
           <Word>HI, I'M</Word>
@@ -237,26 +290,26 @@ const Intro = () => {
 
         {/* I BUILD [PRODUCTS] */}
         <Line variants={lineVariants}>
-          <Word>I BUILD</Word>
-          <Tag $color="#50C878" $alt onClick={() => go('product')}>
+          <Word $d={0.1}>I BUILD</Word>
+          <Tag $color="#50C878" $alt onClick={() => scrollToNext()}>
             PRODUCTS <Arrow />
           </Tag>
         </Line>
 
         {/* WITH [AI] AND [CODE] */}
         <Line variants={lineVariants}>
-          <Word>WITH</Word>
-          <Tag $color="#FE4A23" onClick={() => go('github')}>
+          <Word $d={0.2}>WITH</Word>
+          <Tag $color="#FE4A23" onClick={() => go('systems')}>
             AI <Arrow />
           </Tag>
-          <Word>&amp;</Word>
-          <Tag $color="#9B59B6" $alt onClick={() => go('code')}>
+          <Word $d={0.25}>&amp;</Word>
+          <Tag $color="#9B59B6" $alt onClick={() => go('github')}>
             CODE <Arrow />
           </Tag>
         </Line>
 
         {/* [LET'S CONNECT!] */}
-        <Line variants={lineVariants} style={{ marginTop: '0.6rem' }}>
+        <Line variants={lineVariants} style={{ marginTop: '1.4rem', fontSize: 'clamp(1.1rem, 2vw, 1.5rem)' }}>
           <Tag
             $color="#0077B5"
             onClick={() => go('linkedin')}
@@ -266,9 +319,13 @@ const Intro = () => {
           </Tag>
         </Line>
 
-        <Tagline
-          variants={lineVariants}
-        >
+        <Proof variants={lineVariants}>
+          <li><strong>12G</strong>Startup Perú winner</li>
+          <li><strong>60</strong>Fortune 500 IT hires</li>
+          <li><strong>10</strong>LATAM countries</li>
+        </Proof>
+
+        <Tagline variants={lineVariants}>
           AI Ops Specialist · Product Builder · Peru
         </Tagline>
       </TextContainer>

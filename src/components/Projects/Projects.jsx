@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { reveal, hoverLift, ease, threadProps, message, useScreenReveal } from '../../styles/motion';
+import { reveal, ease, threadProps, message, useScreenReveal } from '../../styles/motion';
 import { useState, useEffect, useRef } from 'react';
 import Header from '../Header/Header';
-import { NavLink } from 'react-router-dom';
 
 /* ── Layout ── */
 
@@ -21,59 +20,117 @@ const ProjectsContent = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 1.8rem;
-  font-weight: 900;
+  max-width: 1180px;
+  margin: 0 auto 2.5rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: clamp(2.4rem, 7vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.9;
   text-transform: uppercase;
-  margin-bottom: 3rem;
-  color: white;
-  letter-spacing: 0.02em;
+  color: var(--ink);
 
-  &::after {
-    content: 'Spoiler: they are awesome.';
-    display: block;
-    font-size: 0.85rem;
+  small {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
     font-weight: 500;
-    color: var(--ink-muted);
+    letter-spacing: 0;
     text-transform: none;
-    margin-top: 0.4rem;
-    letter-spacing: 0.01em;
+    color: var(--ink-faint);
   }
 `;
 
+// Tarjetas que se apilan (sticky stacking): cada una se queda fija y la siguiente la tapa
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 680px;
+  gap: 2rem;
+  max-width: 1180px;
   margin: 0 auto;
 `;
 
 /* ── Project card ── */
 
-const ProjectCard = styled(motion.div)`
+const ProjectCard = styled(motion.article)`
+  position: sticky;
+  top: calc(84px + ${p => p.$i * 14}px);
   background: var(--surface-1);
   border-radius: var(--radius-lg);
   border: 1px solid var(--surface-3);
-  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  box-shadow: 0 -18px 40px -24px rgba(0, 0, 0, 0.9);
+  padding: 1.6rem;
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 1.8rem;
+  align-items: center;
+  transition: border-color var(--dur-base) var(--ease-out);
 
-  &:hover {
-    border-color: var(--line-strong);
-    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  &:hover { border-color: var(--line-strong); }
+
+  @media (max-width: 900px) {
+    position: relative;
+    top: 0;
+    grid-template-columns: 1fr;
+    padding: 1.2rem;
+    gap: 1.2rem;
   }
-  padding: 1.4rem;
+`;
+
+const CardText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.1rem;
+`;
+
+const Index = styled.span`
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+`;
+
+const Meta = styled.p`
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-top: 0.3rem;
+`;
+
+const Impact = styled.p`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+
+  strong { font-family: var(--font-mono); font-weight: 600; color: var(--ink); margin-right: 0.3rem; }
+`;
+
+const Visit = styled.a`
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.05rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  transition: border-color var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+
+  svg { width: 14px; height: 14px; transition: transform var(--dur-base) var(--ease-out); }
+  &:hover { border-color: var(--ink-faint); }
+  &:hover svg { transform: translateX(3px); }
+  &:active { transform: scale(0.96); }
 `;
 
 const ProjectHeader = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  background: var(--surface-2);
-  border: 1px solid var(--surface-3);
-  border-radius: 14px;
-  padding: 1rem 1.1rem;
 `;
 
 const TitleRow = styled.div`
@@ -91,10 +148,10 @@ const ProjectLogo = styled.img`
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1rem;
-  font-weight: 900;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1;
   color: var(--ink);
-  letter-spacing: 0.02em;
   text-transform: uppercase;
 `;
 
@@ -179,11 +236,6 @@ const ResponseBubble = styled(motion.div)`
   box-shadow: 0 4px 18px rgba(254,74,35,0.2);
 `;
 
-const ProjectLink = styled.a`
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-`;
 
 /* ── Image slider ── */
 
@@ -319,66 +371,6 @@ const ModalNav = styled(IconBtn)`
   }
 `;
 
-/* ── Bottom CTA ── */
-
-const BottomCTA = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 4rem;
-  text-align: center;
-`;
-
-const CTALabel = styled.p`
-  font-size: 1.1rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-`;
-
-const CTARow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-size: 0.9rem;
-  color: var(--ink-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-`;
-
-const CTAButton = styled(NavLink)`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background-color: ${props => props.$color || '#4A90E2'};
-  color: var(--bg);
-  font-weight: 900;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.45rem 1rem;
-  border-radius: ${props => props.$left ? '12px 6px 12px 6px' : '6px 12px 6px 12px'};
-  text-decoration: none;
-  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.18s ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 18px rgba(0,0,0,0.22);
-    }
-  }
-
-  &:active {
-    transform: scale(0.97) translateY(0);
-    box-shadow: none;
-  }
-`;
-
 /* ── SVG icons ── */
 
 const IconLeft = () => (
@@ -438,6 +430,9 @@ const Projects = () => {
     {
       id: 5,
       title: "Subastop · VMC",
+      role: "AI Ops Specialist",
+      year: "2026 \u2014 now",
+      impact: [["44", "AI-made pieces published"], ["$0.0065", "per automated carousel"]],
       logo: null,
       tags: [
         { type: "AI OPS",     label: "AI OPS" },
@@ -458,6 +453,9 @@ const Projects = () => {
     {
       id: 4,
       title: "LadraApp",
+      role: "Founder & Product Lead",
+      year: "2026 \u2014 now",
+      impact: [["−70%", "technical debt"], ["3×", "iteration speed"]],
       logo: null,
       tags: [
         { type: "HEALTH TECH", label: "HEALTH TECH" },
@@ -478,6 +476,9 @@ const Projects = () => {
     {
       id: 6,
       title: "Atlas",
+      role: "Builder",
+      year: "2026",
+      impact: [["0", "invented experience"], ["1-click", "job import"]],
       logo: null,
       tags: [
         { type: "AI",     label: "AI" },
@@ -498,6 +499,9 @@ const Projects = () => {
     {
       id: 1,
       title: "DJPONLA",
+      role: "Co-founder & PM",
+      year: "2024 \u2014 2026",
+      impact: [["12G", "Startup Perú winner"], ["10", "countries"], ["40+", "DJs in the community"]],
       logo: "/djponla.png",
       tags: [
         { type: "ENTERTAINMENT", label: "ENTERTAINMENT" },
@@ -507,7 +511,7 @@ const Projects = () => {
         d: ["/djponla-d1.webp","/djponla-d2.webp","/djponla-d3.webp"],
         m: ["/project1-1.png","/project1-2.png","/project1-3.png","/project1-4.png","/project1-5.png","/project1-6.png","/project1-7.png"],
       },
-      description: "The platform where partygoers request songs directly to the live DJ — 100+ DJs already running their sets with it.",
+      description: "The platform where partygoers request songs directly to the live DJ, built with a community of 40+ DJs.",
       response: "Product, design, and code — all built by me.",
       additionalResponses: [
         "This completely changed how we manage song requests at every event.",
@@ -518,6 +522,9 @@ const Projects = () => {
     {
       id: 3,
       title: "HUB UDEP",
+      role: "Freelance",
+      year: "2023",
+      impact: [["Days", "from brief to live"]],
       logo: "/hubudep_logo.jpeg",
       tags: [
         { type: "EDUCATION",  label: "EDUCATION" },
@@ -538,6 +545,9 @@ const Projects = () => {
     {
       id: 7,
       title: "Sinkarta",
+      role: "Founder",
+      year: "2025",
+      impact: [["Live", "RSVPs + photo gallery"]],
       logo: null,
       tags: [
         { type: "EVENTS",  label: "EVENTS" },
@@ -558,6 +568,9 @@ const Projects = () => {
     {
       id: 8,
       title: "Enlace",
+      role: "Freelance developer",
+      year: null,
+      impact: [["Next.js", "in progress"]],
       logo: null,
       tags: [
         { type: "AGENCY", label: "AGENCY" },
@@ -612,40 +625,49 @@ const Projects = () => {
     <ProjectsSection id="projects">
       <Header />
       <ProjectsContent>
-        <Title>SELECTED WORK</Title>
+        <Title>Selected work <small>{String(projects.length).padStart(2, '0')} projects</small></Title>
 
         <CardList>
-          {projects.map((project) => (
+          {projects.map((project, i) => (
             <ProjectCard
               key={project.id}
+              $i={i}
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-60px' }}
-              whileHover={hoverLift}
             >
-              {/* Header */}
-              <ProjectHeader>
-                <TitleRow>
-                  {project.logo && <ProjectLogo src={project.logo} alt={project.title} />}
-                  <ProjectTitle>{project.title}</ProjectTitle>
-                </TitleRow>
-                <TagRow>
-                  {project.tags.map(tag => (
-                    <Tag key={tag.label} type={tag.type}>{tag.label}</Tag>
-                  ))}
-                </TagRow>
-              </ProjectHeader>
+              <CardText>
+                <ProjectHeader>
+                  <Index>{String(i + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}</Index>
+                  <TitleRow>
+                    {project.logo && <ProjectLogo src={project.logo} alt="" />}
+                    <ProjectTitle>{project.title}</ProjectTitle>
+                  </TitleRow>
+                  <Meta>{project.role}{project.year && ` · ${project.year}`}</Meta>
+                  <TagRow>
+                    {project.tags.map(tag => (
+                      <Tag key={tag.label} type={tag.type}>{tag.label}</Tag>
+                    ))}
+                  </TagRow>
+                </ProjectHeader>
 
-              {/* Chat */}
-              <ChatArea {...threadProps}>
-                <MsgMeta variants={message}>Client</MsgMeta>
-                <QuestionBubble variants={message}>{project.description}</QuestionBubble>
-                <MsgMeta variants={message} $right>Abraham</MsgMeta>
-                <ResponseBubble variants={message}>{project.response}</ResponseBubble>
-              </ChatArea>
+                <ChatArea {...threadProps}>
+                  <MsgMeta variants={message}>Client</MsgMeta>
+                  <QuestionBubble variants={message}>{project.description}</QuestionBubble>
+                  <MsgMeta variants={message} $right>Abraham</MsgMeta>
+                  <ResponseBubble variants={message}>{project.response}</ResponseBubble>
+                </ChatArea>
 
-              {/* Slider */}
+                <Impact>
+                  {project.impact.map(([n, l]) => <span key={l}><strong>{n}</strong>{l}</span>)}
+                </Impact>
+
+                <Visit href={project.websiteUrl} target="_blank" rel="noopener noreferrer">
+                  {project.additionalResponses[1]} <IconRight />
+                </Visit>
+              </CardText>
+
               {imgsOf(project.id).length > 0 && (
                 <RevealWrap
                   onTouchStart={handleTouchStart}
@@ -655,7 +677,7 @@ const Projects = () => {
                     <SliderImage
                       key={idxOf(project.id)}
                       src={imgsOf(project.id)[idxOf(project.id)]}
-                      alt={`${project.title} — captura ${(idxOf(project.id)) + 1}`}
+                      alt={`${project.title} — captura ${idxOf(project.id) + 1}`}
                       loading="lazy"
                       initial={{ opacity: 0, scale: 1.02 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -663,51 +685,24 @@ const Projects = () => {
                       transition={{ duration: 0.45, ease }}
                     />
                   </AnimatePresence>
-                  <ExpandBtn onClick={() => openModal(project.id, idxOf(project.id))}>
+                  <ExpandBtn aria-label="Ampliar captura" onClick={() => openModal(project.id, idxOf(project.id))}>
                     <IconExpand />
                   </ExpandBtn>
-                  <SliderDots>
-                    {imgsOf(project.id).map((_, i) => (
-                      <Dot key={i} $active={( idxOf(project.id)) === i} />
-                    ))}
-                  </SliderDots>
-                  <SliderControls>
-                    <IconBtn onClick={() => slide(project.id, 'prev')}><IconLeft /></IconBtn>
-                    <IconBtn onClick={() => slide(project.id, 'next')}><IconRight /></IconBtn>
-                  </SliderControls>
+                  {imgsOf(project.id).length > 1 && <>
+                    <SliderDots>
+                      {imgsOf(project.id).map((_, j) => <Dot key={j} $active={idxOf(project.id) === j} />)}
+                    </SliderDots>
+                    <SliderControls>
+                      <IconBtn aria-label="Anterior" onClick={() => slide(project.id, 'prev')}><IconLeft /></IconBtn>
+                      <IconBtn aria-label="Siguiente" onClick={() => slide(project.id, 'next')}><IconRight /></IconBtn>
+                    </SliderControls>
+                  </>}
                 </RevealWrap>
               )}
-
-              {/* Closing chat */}
-              <ChatArea {...threadProps}>
-                <MsgMeta variants={message}>Client</MsgMeta>
-                <QuestionBubble variants={message}>{project.additionalResponses[0]}</QuestionBubble>
-                <MsgMeta variants={message} $right>Abraham</MsgMeta>
-                <ResponseBubble variants={message}>
-                  {project.websiteUrl
-                    ? <ProjectLink href={project.websiteUrl} target="_blank" rel="noopener noreferrer">{project.additionalResponses[1]}</ProjectLink>
-                    : project.additionalResponses[1]
-                  }
-                </ResponseBubble>
-              </ChatArea>
             </ProjectCard>
           ))}
         </CardList>
 
-        {/* Bottom CTA */}
-        <BottomCTA>
-          <CTALabel>Hungry for more?</CTALabel>
-          <CTARow>
-            <span>Deep dive into</span>
-            <CTAButton to="/product" $color="#50C878" $left>
-              <IconRight style={{ width: 14 }} /> Product
-            </CTAButton>
-            <span>or</span>
-            <CTAButton to="/code" $color="#9B59B6">
-              <IconRight style={{ width: 14 }} /> Code
-            </CTAButton>
-          </CTARow>
-        </BottomCTA>
       </ProjectsContent>
 
       {/* Modal */}
