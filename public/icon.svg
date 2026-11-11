@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="157 150 710 710">
+  <style>
+    .cat { fill: #131313; }
+    @media (prefers-color-scheme: dark) { .cat { fill: #fdfbfb; } }
+  </style>
+  <path class="cat" d="M216 185 L385 282 Q512 230 638 282 L806 185 L806 470 A300 300 0 1 1 216 470 Z"/>
+  <g fill="none" stroke="#F1C40F" stroke-width="36">
+    <circle cx="382" cy="527" r="48"/>
+    <circle cx="643" cy="527" r="48"/>
+  </g>
+</svg>
