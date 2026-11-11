@@ -162,6 +162,42 @@ const GlobalStyles = createGlobalStyle`
     scrollbar-color: var(--line-strong) transparent;
   }
 
+  /* Textura de grano (tendencia 2026): ruido SVG estático, sin JS */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Tipografía cinética compartida: el título "gana peso" al entrar */
+  @keyframes weight-in {
+    from { font-weight: 300; letter-spacing: 0.04em; }
+    to   { font-weight: 800; letter-spacing: -0.02em; }
+  }
+
+  .print-only { display: none !important; }
+
+  /* "Download CV": la página About se imprime como CV en blanco y negro */
+  @media print {
+    :root {
+      --bg: #fff; --surface-1: #fff; --surface-2: #fff; --surface-3: #ddd;
+      --line: #ddd; --line-strong: #bbb;
+      --ink: #111; --ink-muted: #333; --ink-faint: #555;
+      --about: #111; --product: #111;
+    }
+    body, #root { position: static; overflow: visible; height: auto; }
+    [data-noprint], body::after { display: none !important; }
+    .print-only { display: flex !important; }
+    * { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; box-shadow: none !important; }
+    main { padding: 0 !important; gap: 1.6rem !important; }
+    li, section > div > div { break-inside: avoid; }
+    @page { margin: 14mm; }
+  }
+
   #root::-webkit-scrollbar { width: 8px; }
   #root::-webkit-scrollbar-thumb {
     background: var(--line-strong);

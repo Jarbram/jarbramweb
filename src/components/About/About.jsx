@@ -1,500 +1,540 @@
-import { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import Header from '../Header/Header';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { reveal } from '../../styles/motion';
+import { Link } from 'react-router-dom';
+import Header from '../Header/Header';
+import AskMe from '../AskMe/AskMe';
+import { reveal, hoverLift } from '../../styles/motion';
 
-const pulseGreen = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(80, 200, 120, 0.5); }
-  60%       { box-shadow: 0 0 0 7px rgba(80, 200, 120, 0); }
+/* ── Datos del CV (fuente: CV nov-2026) ── */
+
+const EMAIL = 'huacchillocastillo@gmail.com';
+const LINKEDIN = 'https://www.linkedin.com/in/abraham-huacchillo/';
+const GITHUB = 'https://github.com/jarbram';
+
+const METRICS = [
+  { value: '60',   label: 'Senior IT roles closed for Fortune 500 companies' },
+  { value: '12G',  label: 'Startup Perú innovation fund winner with DJPONLA' },
+  { value: '10',   label: 'LATAM countries reached by DJPONLA' },
+  { value: '−40%', label: 'Operational workload, automating an ATS with n8n + Make' },
+  { value: '3×',   label: 'Product iteration speed with Claude Code workflows' },
+  { value: '−70%', label: 'Technical debt after re-platforming LadraApp' },
+];
+
+const EXPERIENCE = [
+  {
+    company: 'Subastop · VMC Subastas', url: 'https://www.vmcsubastas.com',
+    role: 'AI Ops Specialist', period: 'May 2026 — Present', current: true,
+    points: [
+      'Built Prisma, an AI content studio that turns an auction offer into a reel: 44 pieces published, 111 Remotion compositions.',
+      'Automated carousels end to end with a vision model that picks photos and flags damage, at $0.0065 per carousel.',
+      'Co-building Subastín, an in-house support agent on AWS serverless with RAG over the Help Center (89% recall in benchmark).',
+    ],
+    stack: ['Claude Code', 'Remotion', 'Gemini', 'Pinecone', 'AWS'],
+  },
+  {
+    company: 'LadraApp', url: 'https://ladraapp.com',
+    role: 'Product Lead & Founder', period: 'Jan 2026 — Present', current: true,
+    points: [
+      'Validated a veterinary HealthTech MVP with a no-code stack, converting sales from launch day.',
+      'Migrated to Vercel + Supabase, cutting technical debt by 70% with an architecture ready for AI agents.',
+      'Designed Claude Code dev workflows that tripled iteration speed; UX/UI test suite with Playwright.',
+    ],
+    stack: ['Next.js', 'Supabase', 'Vercel', 'Playwright'],
+  },
+  {
+    company: 'TalentCross', url: 'https://talentcross.biz',
+    role: 'AI Systems & Automation Specialist · Recruiter', period: 'Oct 2024 — May 2026',
+    points: [
+      'Automated the Manatal ATS with n8n, Make and AI predictive filtering, cutting operational load by 40%.',
+      'Closed a record 60 senior IT roles for Fortune 500 clients, with data centralized in Airtable via REST APIs and webhooks.',
+      'Translated technical concepts for non-technical stakeholders and drove AI adoption inside the team.',
+    ],
+    stack: ['n8n', 'Make', 'Airtable', 'LLMs'],
+  },
+  {
+    company: 'DJPONLA', url: 'https://djponla.com',
+    role: 'Product Manager & Co-Founder', period: 'May 2024 — Jan 2026',
+    points: [
+      'Won the Startup Perú 12G innovation fund and led expansion to 10 LATAM countries.',
+      'Owned the roadmap (v0.dev, TypeScript) with a community of 40+ DJs, tracking retention, churn and LTV.',
+    ],
+    stack: ['TypeScript', 'v0.dev', 'Product metrics'],
+  },
+  {
+    company: 'Programa Gestores de Cambio',
+    role: 'Systems & Operations Assistant', period: 'Jul 2024 — Sep 2024',
+    points: [
+      'Automated the admissions funnel for 640+ applicants with Airtable, Make and WhatsApp Business, cutting replies from days to minutes.',
+      'Centralized applicant data so the team could track the funnel and decide with numbers.',
+    ],
+    stack: ['Airtable', 'Make', 'WhatsApp Business'],
+  },
+];
+
+// Proyectos y etapas que también fueron escuela
+const EARLIER = [
+  { period: '2026', role: 'Builder', org: 'Atlas', url: 'https://atlas-web-ten-liard.vercel.app/', note: 'AI CV tailoring with DeepSeek that flags anything not in your profile. Chrome extension + PDF.' },
+  { period: '2026', role: 'Freelance developer', org: 'Enlace Comunicación', url: 'https://www.enlacecomunicacion.pe', note: 'New Next.js site for the first communications agency in Piura.' },
+  { period: '2025', role: 'Founder', org: 'Sinkarta', url: 'https://sinkarta.com', note: 'Digital wedding invitations with real-time RSVP and a shared photo gallery.' },
+  { period: '2023', role: 'Freelance web developer', org: 'HUB UDEP', url: 'https://www.hub.udep.pe/curso-de-especializacion-en-inversion-angel', note: 'Landing page for the Angel Investment specialization course, from brief to live in days.' },
+  { period: '2022 — 2023', role: 'Self-taught developer', org: 'Go & React', url: 'https://github.com/jarbram', note: 'JWT auth microservice in Go, a payment gateway with the Strategy pattern, CRUD apps on PostgreSQL and MongoDB.' },
+];
+
+const SKILLS = [
+  { group: 'AI & agents', items: ['Claude Code', 'Agents', 'Prompt engineering', 'Context management', 'Function/tool calling', 'RAG · Pinecone', 'Gemini', 'OpenAI', 'DeepSeek'] },
+  { group: 'Automation',  items: ['n8n', 'Make', 'Airtable', 'REST APIs', 'Webhooks', 'Python'] },
+  { group: 'Product & code', items: ['Next.js', 'TypeScript', 'Supabase', 'SQL', 'Vercel', 'Playwright', 'Remotion'] },
+  { group: 'Ways of working', items: ['Lean Startup', 'Scrum', 'Kanban', 'Product metrics'] },
+];
+
+const EDUCATION = [
+  { title: 'B.A. Business Administration', org: 'Universidad de Piura', year: '2017 — 2022' },
+  { title: 'Diploma in Open Innovation', org: 'Universidad Tecnológica Nacional, Argentina', year: '2024' },
+  { title: 'Ethical Hacking', org: 'Hackmetrix Hackers Academy', year: '2024' },
+  { title: 'Frontend Development', org: 'Oracle ONE · Alura', year: '2023' },
+];
+
+const CHAT = [
+  { q: 'Business degree, shipping code. How?', a: 'Founding startups forced it. I needed MVPs faster than I could hire, so I learned to build them. Today AI lets me go from idea to production in days.' },
+  { q: 'What does AI Ops mean for you?', a: 'Finding the work a team repeats every week and turning it into a system: agents, automations and LLMs wired to real business problems.' },
+  { q: 'How do you decide what to build?', a: 'Outcome first, feature second. Validate cheap, measure, then scale what works. Speed beats perfection.' },
+  { q: 'What does your stack look like?', a: 'Claude Code is my daily pair. Next.js and Supabase for products, n8n and Make to glue systems, Gemini and DeepSeek with RAG for agents, Remotion for video, AWS serverless when it has to scale.' },
+  { q: 'Biggest win so far?', a: 'Winning Startup Perú 12G with DJPONLA and taking it to 10 LATAM countries. Close second: 60 senior IT roles closed for Fortune 500 clients.' },
+  { q: 'Why should we hire you?', a: 'I have sat on both sides: recruiter who knows what teams need, founder who ships it. You get someone who finds the problem and builds the fix.' },
+];
+
+/* ── Layout ── */
+
+const Page = styled.main`
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4.5rem;
+
+  @media (max-width: 768px) { padding: 1.5rem 1rem 4rem; gap: 3.5rem; }
 `;
 
-const AboutPage = styled.div`
-  background: var(--background);
-  min-height: 100vh;
-  position: relative;
+const Section = styled(motion.section).attrs({ variants: reveal, initial: 'hidden', whileInView: 'visible', viewport: { once: true, margin: '-10% 0px' } })`
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+`;
+
+const Eyebrow = styled.h2`
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--about);
+`;
+
+/* ── Hero ── */
+
+const Hero = styled(motion.div)`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: center;
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; gap: 1.4rem; }
+`;
+
+const Photo = styled.img`
+  width: 168px;
+  height: 168px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  border: 1px solid var(--surface-3);
+
+  @media (max-width: 700px) { width: 112px; height: 112px; }
+`;
+
+const Name = styled.h1`
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+`;
+
+const Role = styled.p`
+  margin-top: 0.7rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--about);
+`;
+
+const Summary = styled.p`
+  margin-top: 0.9rem;
+  max-width: 62ch;
+  color: var(--ink-muted);
+  line-height: 1.65;
+`;
+
+const Meta = styled.ul`
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+`;
+
+const Available = styled.li`
+  color: var(--product);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 
   &::before {
     content: '';
-    position: fixed;
-    top: -300px;
-    right: -300px;
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(254,74,35,0.08) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
-    filter: blur(20px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
   }
 `;
 
-const ContentContainer = styled.div`
-  max-width: 1080px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 1.5rem;
-  padding: 2rem 1.5rem 5rem;
-  position: relative;
-  z-index: 1;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    padding: 1.5rem 1rem 4rem;
-  }
+const Actions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
 `;
 
-/* ── Left column: chat ── */
-
-const ChatCard = styled(motion.div)`
-  background: var(--surface-1);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--surface-3);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ChatTopBar = styled.div`
-  display: flex;
+const Btn = styled.a`
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.4rem;
-  background: var(--surface-2);
-  border-bottom: 1px solid #222;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.88rem;
+  border: 1px solid ${p => p.$primary ? 'var(--about)' : 'var(--line-strong)'};
+  background: ${p => p.$primary ? 'var(--about)' : 'transparent'};
+  color: ${p => p.$primary ? 'var(--on-color)' : 'var(--ink)'};
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+
+  &:hover { border-color: ${p => p.$primary ? 'var(--about)' : 'var(--ink-faint)'}; }
+  &:active { transform: scale(0.96); }
 `;
 
-const AvatarWrap = styled.div`
-  position: relative;
-  flex-shrink: 0;
+/* ── Métricas (bento) ── */
+
+const Bento = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+
+  @media (max-width: 800px) { grid-template-columns: repeat(2, 1fr); }
 `;
 
-const Avatar = styled.img`
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  object-fit: cover;
-  display: block;
-  border: 1.5px solid var(--line);
+const Metric = styled(motion.div)`
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-lg);
+  padding: 1.3rem 1.2rem;
+
+  strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  span {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--ink-muted);
+  }
 `;
 
-const OnlineDot = styled.span`
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 11px;
-  height: 11px;
-  background: var(--product);
-  border-radius: 50%;
-  border: 2px solid var(--surface-2);
-  animation: ${pulseGreen} 2.5s infinite;
-`;
+/* ── Experiencia (timeline) ── */
 
-const ChatMeta = styled.div``;
-
-const ChatName = styled.h1`
-  font-size: 0.95rem;
-  color: var(--ink);
-  font-weight: 800;
-  margin-bottom: 0.15rem;
-  letter-spacing: 0.01em;
-`;
-
-const ChatRole = styled.p`
-  font-size: 0.72rem;
-  color: var(--ink-faint);
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-`;
-
-const MessagesArea = styled.div`
+const Timeline = styled.ol`
+  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
-  padding: 1.6rem 1.4rem;
 `;
 
-const MsgGroup = styled(motion.div)`
+const Job = styled.li`
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1.5rem;
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--line);
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; gap: 0.5rem; }
+`;
+
+const Period = styled.p`
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  padding-top: 0.25rem;
+
+  em {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-style: normal;
+    color: var(--product);
+  }
+`;
+
+const JobTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  a { color: var(--about); }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+`;
+
+const Points = styled.ul`
+  margin-top: 0.7rem;
+  padding-left: 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  max-width: 70ch;
+
+  li::marker { color: var(--about); }
 `;
 
-const MsgMeta = styled.span`
-  font-size: 0.62rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--ink-faint);
-  padding: 0 0.4rem;
-  align-self: ${props => props.$right ? 'flex-end' : 'flex-start'};
-`;
-
-const QuestionBubble = styled.div`
-  background: var(--ink);
-  color: var(--bg);
-  padding: 0.8rem 1.1rem;
-  border-radius: 16px;
-  border-bottom-left-radius: 4px;
-  max-width: 84%;
-  align-self: flex-start;
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-`;
-
-const AnswerBubble = styled.div`
-  background: var(--accent);
-  color: #fff;
-  padding: 0.8rem 1.1rem;
-  border-radius: 16px;
-  border-bottom-right-radius: 4px;
-  max-width: 84%;
-  align-self: flex-end;
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-  box-shadow: 0 6px 24px rgba(254,74,35,0.22);
-`;
-
-const TechStack = styled.div`
+const Chips = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(255,255,255,0.18);
+  margin-top: ${p => p.$tight ? '0' : '0.9rem'};
 `;
 
-const TechBadge = styled(motion.span)`
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.22rem 0.55rem;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.18);
-  cursor: default;
-`;
-
-/* ── Right column ── */
-
-const InfoColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-`;
-
-const InfoCard = styled(motion.div)`
-  background: var(--surface-1);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--surface-3);
-  padding: 1.4rem;
-`;
-
-const CardLabel = styled.h3`
-  font-size: 0.65rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  margin-bottom: 1.1rem;
-`;
-
-const RoleItem = styled(motion.div)`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.85rem 1rem;
-  background: ${props => props.$current ? 'rgba(80,200,120,0.06)' : '#1c1c1c'};
-  border-radius: 12px;
-  border: 1px solid ${props => props.$current ? 'rgba(80,200,120,0.22)' : '#252525'};
-  margin-bottom: 0.55rem;
-  transition: border-color 0.25s ease, background 0.25s ease;
-
-  &:last-child { margin-bottom: 0; }
-
-  &:hover {
-    border-color: ${props => props.$current ? 'rgba(80,200,120,0.4)' : '#303030'};
-    background: ${props => props.$current ? 'rgba(80,200,120,0.09)' : '#1e1e1e'};
-  }
-`;
-
-const RoleInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-`;
-
-const RoleTitle = styled.h4`
-  font-size: 0.88rem;
-  color: var(--ink);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-`;
-
-const CompanyLink = styled.a`
-  font-size: 0.77rem;
-  color: #484848;
+const Chip = styled.span`
+  font-size: 0.75rem;
   font-weight: 600;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: color 0.2s ease;
-
-  &:hover { color: #707070; }
-`;
-
-const NowBadge = styled.span`
-  font-size: 0.58rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--product);
-  background: rgba(80,200,120,0.1);
-  padding: 0.18rem 0.45rem;
-  border-radius: 4px;
-  border: 1px solid rgba(80,200,120,0.22);
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-  animation: ${pulseGreen} 3s infinite;
-`;
-
-const SocialLink = styled(motion.a)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8rem 1rem;
-  color: var(--ink-muted);
-  text-decoration: none;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
   background: var(--surface-2);
-  border-radius: 12px;
   border: 1px solid var(--surface-3);
-  margin-bottom: 0.55rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  color: var(--ink-muted);
+`;
 
-  &:last-child { margin-bottom: 0; }
+const Earlier = styled.ul`
+  list-style: none;
+  margin-top: 0.5rem;
 
-  &:hover {
-    color: var(--ink);
-    border-color: var(--line);
-    background: var(--surface-2);
+  h3 { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.4rem; }
+  li {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
+    break-inside: avoid;
   }
+  li > span { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); padding-top: 0.15rem; }
+  strong { font-weight: 600; }
+  a { color: var(--about); }
+  p { margin-top: 0.2rem; font-size: 0.9rem; color: var(--ink-muted); line-height: 1.55; }
 
-  svg { width: 16px; height: 16px; flex-shrink: 0; }
+  @media (max-width: 700px) { li { grid-template-columns: 1fr; gap: 0.2rem; } }
 `;
 
-const SocialLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
+const SideNote = styled.p`
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+
+  a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 `;
 
-/* ── Animation variants ── */
+/* ── Skills + educación ── */
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
-};
+const TwoCol = styled.div`
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.5rem;
 
-const msgVariants = {
-  hidden: { opacity: 0, y: 14, scale: 0.98 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] } },
-};
+  @media (max-width: 800px) { grid-template-columns: 1fr; gap: 3.5rem; }
+`;
 
-const roleVariants = {
-  hidden: { opacity: 0, x: -12 },
-  visible: (i) => ({ opacity: 1, x: 0, transition: { delay: i * 0.06, duration: 0.22, ease: [0.23, 1, 0.32, 1] } }),
-};
+const SkillRow = styled.div`
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.8rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
 
-/* ── Icons ── */
+  h3 { font-family: var(--font-text); font-size: 0.85rem; font-weight: 600; color: var(--ink); letter-spacing: 0; }
 
-const IconArrow = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M12 5l7 7-7 7"/>
-  </svg>
+  @media (max-width: 500px) { grid-template-columns: 1fr; }
+`;
+
+const EduItem = styled.div`
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+
+  h3 { font-family: var(--font-text); font-size: 0.95rem; font-weight: 600; letter-spacing: 0; }
+  p  { font-size: 0.85rem; color: var(--ink-faint); margin-top: 0.15rem; }
+  span { font-family: var(--font-mono); font-size: 0.75rem; }
+`;
+
+/* ── CTA ── */
+
+const Cta = styled(Section)`
+  align-items: flex-start;
+  padding: 2.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--surface-3);
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  p { color: var(--ink-muted); max-width: 52ch; }
+
+  @media (max-width: 600px) { padding: 1.6rem; }
+`;
+
+/* ── Componente ── */
+
+// ponytail: "Download CV" imprime esta misma página (estilos print en GlobalStyles); sin PDF que mantener aparte
+const printCV = (e) => { e.preventDefault(); window.print(); };
+
+const About = () => (
+  <>
+    <Header />
+    <Page>
+      <Hero variants={reveal} initial="hidden" animate="visible">
+        <Photo src="/abraham.jpeg" alt="Abraham Huacchillo" width="168" height="168" />
+        <div>
+          <Name>Abraham Huacchillo</Name>
+          <Role>AI Ops Specialist · Product Builder</Role>
+          <Summary>
+            I turn repetitive business work into AI systems: agents, automations and LLM integrations
+            that ship to production. Two-time founder, Startup Perú winner, and the person who builds
+            the MVP himself — usually with Claude Code as pair.
+          </Summary>
+          <Meta>
+            <Available>Open to remote AI Ops / Product roles</Available>
+            <li>Piura, Perú · Remote</li>
+            <li>Spanish (native) · English (B2+)</li>
+          </Meta>
+          <Actions data-noprint>
+            <Btn $primary href="#" onClick={printCV}>Download CV</Btn>
+            <Btn href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</Btn>
+            <Btn href={`mailto:${EMAIL}`}>Email me</Btn>
+          </Actions>
+          <Meta className="print-only">
+            <li>{EMAIL}</li><li>linkedin.com/in/abraham-huacchillo</li><li>github.com/jarbram</li>
+          </Meta>
+        </div>
+      </Hero>
+
+      <Section aria-labelledby="impact">
+        <Eyebrow id="impact">Impact</Eyebrow>
+        <Bento>
+          {METRICS.map(m => (
+            <Metric key={m.label} whileHover={hoverLift}>
+              <strong>{m.value}</strong>
+              <span>{m.label}</span>
+            </Metric>
+          ))}
+        </Bento>
+      </Section>
+
+      <Section aria-labelledby="experience">
+        <Eyebrow id="experience">Experience</Eyebrow>
+        <Timeline>
+          {EXPERIENCE.map(job => (
+            <Job key={job.company}>
+              <Period>
+                {job.period}
+                {job.current && <><br /><em>● Now</em></>}
+              </Period>
+              <div>
+                <JobTitle>
+                  {job.role} · <a href={job.url} target="_blank" rel="noopener noreferrer">{job.company}</a>
+                </JobTitle>
+                <Points>{job.points.map(p => <li key={p}>{p}</li>)}</Points>
+                <Chips>{job.stack.map(s => <Chip key={s}>{s}</Chip>)}</Chips>
+              </div>
+            </Job>
+          ))}
+        </Timeline>
+        <Earlier>
+          <h3>Also part of the path</h3>
+          {EARLIER.map(e => (
+            <li key={e.org}>
+              <span>{e.period}</span>
+              <div>
+                <strong>{e.role} · <a href={e.url} target="_blank" rel="noopener noreferrer">{e.org}</a></strong>
+                <p>{e.note}</p>
+              </div>
+            </li>
+          ))}
+        </Earlier>
+        <SideNote>How these systems work inside: <Link to="/systems">Systems</Link>.</SideNote>
+      </Section>
+
+      <Section aria-labelledby="words" data-noprint>
+        <Eyebrow id="words">In my words</Eyebrow>
+        <AskMe
+          items={CHAT}
+          title="Ask me anything."
+          sub="Well, almost. Pick a question and I’ll answer like I would in an interview."
+        />
+      </Section>
+
+      <TwoCol>
+        <Section aria-labelledby="skills">
+          <Eyebrow id="skills">Skills</Eyebrow>
+          <div>
+            {SKILLS.map(s => (
+              <SkillRow key={s.group}>
+                <h3>{s.group}</h3>
+                <Chips $tight>{s.items.map(i => <Chip key={i}>{i}</Chip>)}</Chips>
+              </SkillRow>
+            ))}
+          </div>
+        </Section>
+
+        <Section aria-labelledby="education">
+          <Eyebrow id="education">Education & certifications</Eyebrow>
+          <div>
+            {EDUCATION.map(e => (
+              <EduItem key={e.title}>
+                <h3>{e.title}</h3>
+                <p>{e.org} · <span>{e.year}</span></p>
+              </EduItem>
+            ))}
+          </div>
+        </Section>
+      </TwoCol>
+
+      <Cta aria-labelledby="cta" data-noprint>
+        <h2 id="cta">Let’s automate something.</h2>
+        <p>Open to remote roles in AI Operations, automation and product. I reply within a day.</p>
+        <Actions>
+          <Btn $primary href={`mailto:${EMAIL}`}>{EMAIL}</Btn>
+          <Btn href={GITHUB} target="_blank" rel="noopener noreferrer">GitHub</Btn>
+        </Actions>
+      </Cta>
+    </Page>
+  </>
 );
-
-const IconLinkedIn = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
-  </svg>
-);
-
-const IconInstagram = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 7.082c1.602 0 1.792.006 2.425.035 1.627.074 2.385.845 2.46 2.459.028.633.034.822.034 2.424s-.006 1.792-.034 2.424c-.075 1.613-.832 2.386-2.46 2.46-.633.028-.822.035-2.425.035-1.602 0-1.792-.006-2.424-.035-1.63-.075-2.385-.849-2.46-2.46-.028-.632-.035-.822-.035-2.424s.007-1.792.035-2.424c.074-1.615.832-2.386 2.46-2.46.632-.029.822-.034 2.424-.034zm0-1.082c-1.63 0-1.833.007-2.474.037-2.18.1-3.39 1.309-3.49 3.489-.029.641-.036.845-.036 2.474 0 1.63.007 1.834.036 2.474.1 2.179 1.31 3.39 3.49 3.49.641.029.844.036 2.474.036 1.63 0 1.834-.007 2.475-.036 2.176-.1 3.391-1.309 3.489-3.49.029-.64.036-.844.036-2.474 0-1.629-.007-1.833-.036-2.474-.098-2.177-1.309-3.39-3.489-3.489-.641-.03-.845-.037-2.475-.037zm0 2.919c-1.701 0-3.081 1.379-3.081 3.081s1.38 3.081 3.081 3.081 3.081-1.379 3.081-3.081c0-1.701-1.38-3.081-3.081-3.081zm0 5.081c-1.105 0-2-.895-2-2 0-1.104.895-2 2-2 1.104 0 2.001.895 2.001 2s-.897 2-2.001 2zm3.202-5.922c-.397 0-.72.322-.72.72 0 .397.322.72.72.72.398 0 .721-.322.721-.72 0-.398-.322-.72-.721-.72z"/>
-  </svg>
-);
-
-const IconGitHub = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-  </svg>
-);
-
-/* ── Component ── */
-
-const About = () => {
-  const [content] = useState([
-    {
-      question: "What's your current focus in tech? 🤖",
-      answer: "I'm fully focused on AI Operations — designing workflows, building automations, and connecting AI tools to real business problems. It's the perfect intersection of my product mindset and technical background. The goal is always the same: ship things that actually work. 🚀"
-    },
-    {
-      question: "How did you get into AI Operations? 🎯",
-      answer: "It grew naturally from building products. As a founder I was always trying to make things run faster and smarter. AI gave me the tools to do that at scale — going from building MVPs manually to orchestrating entire workflows with LLMs and AI agents. 💡"
-    },
-    {
-      question: "What does your stack look like right now? 🔄",
-      answer: "Claude Code is my daily pair. Around it: Next.js and Supabase for products, Python and Remotion for automation and video, n8n to glue it all together. Whatever ships fastest and solves the problem. 🛠️"
-    },
-    {
-      question: "How do you approach creating real impact? 💫",
-      answer: "I start with the outcome, not the feature. My startup background taught me that speed and validation matter more than perfection. I blend AI, product thinking, and code to build things that solve real problems — and then I ship them. 🌟"
-    }
-  ]);
-
-  const roles = [
-    { title: "AI Ops Specialist",      company: "Subastop · VMC", url: "https://www.vmcsubastas.com", current: true },
-    { title: "Founder & Developer",    company: "LadraApp",       url: "https://ladraapp.com",        current: true },
-    { title: "Builder",                company: "Atlas",          url: "https://atlas-web-ten-liard.vercel.app/" },
-    { title: "Founder",                company: "Sinkarta",       url: "https://sinkarta.com"                    },
-    { title: "Co-Founder & Developer", company: "DJPONLA",        url: "https://djponla.com"                     },
-    { title: "Talent Acquisition",     company: "TalentCross",    url: "https://talentcross.biz"                 },
-  ];
-
-  const socials = [
-    { label: "LinkedIn",   href: "https://linkedin.com/in/abraham-huacchillo", icon: <IconLinkedIn />  },
-    { label: "Instagram",  href: "https://instagram.com/abrahamhuacchillo",    icon: <IconInstagram /> },
-    { label: "GitHub",     href: "https://github.com/jarbram",                 icon: <IconGitHub />    },
-  ];
-
-  const tools = ["Claude Code", "Claude", "OpenAI", "Gemini", "n8n", "Next.js", "Supabase", "Python", "Remotion", "Playwright", "Vercel", "AWS"];
-
-  return (
-    <>
-      <Header />
-      <AboutPage>
-        <ContentContainer>
-
-          {/* ── Chat column ── */}
-          <ChatCard
-            variants={reveal}
-            initial="hidden"
-            animate="visible"
-          >
-            <ChatTopBar>
-              <AvatarWrap>
-                <Avatar src="/abraham.jpeg" alt="Abraham" />
-                <OnlineDot />
-              </AvatarWrap>
-              <ChatMeta>
-                <ChatName>Abraham Huacchillo</ChatName>
-                <ChatRole>AI Ops Specialist @ Subastop · Product Builder</ChatRole>
-              </ChatMeta>
-            </ChatTopBar>
-
-            <MessagesArea
-              as={motion.div}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {content.map((item, index) => (
-                <MsgGroup key={index} variants={msgVariants}>
-                  <MsgMeta>You</MsgMeta>
-                  <QuestionBubble>{item.question}</QuestionBubble>
-                  <MsgMeta $right>Abraham</MsgMeta>
-                  <AnswerBubble>
-                    {item.answer}
-                    {index === 2 && (
-                      <TechStack>
-                        {tools.map(tool => (
-                          <TechBadge
-                            key={tool}
-                            whileHover={{ scale: 1.08, background: 'rgba(255,255,255,0.22)' }}
-                          >
-                            {tool}
-                          </TechBadge>
-                        ))}
-                      </TechStack>
-                    )}
-                  </AnswerBubble>
-                </MsgGroup>
-              ))}
-            </MessagesArea>
-          </ChatCard>
-
-          {/* ── Info column ── */}
-          <InfoColumn>
-
-            <InfoCard
-              variants={reveal}
-              initial="hidden"
-              animate="visible"
-            >
-              <CardLabel>Experience</CardLabel>
-              {roles.map((role, i) => (
-                <RoleItem
-                  key={i}
-                  $current={role.current}
-                  custom={i}
-                  variants={roleVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <RoleInfo>
-                    <RoleTitle>{role.title}</RoleTitle>
-                    {role.url
-                      ? <CompanyLink href={role.url} target="_blank" rel="noopener noreferrer">@ {role.company}</CompanyLink>
-                      : <CompanyLink as="span">@ {role.company}</CompanyLink>
-                    }
-                  </RoleInfo>
-                  {role.current && <NowBadge>now</NowBadge>}
-                </RoleItem>
-              ))}
-            </InfoCard>
-
-            <InfoCard
-              variants={reveal}
-              initial="hidden"
-              animate="visible"
-            >
-              <CardLabel>Connect</CardLabel>
-              {socials.map((s, i) => (
-                <SocialLink
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.24 + i * 0.06, ease: [0.23, 1, 0.32, 1] }}
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <SocialLeft>
-                    {s.icon}
-                    {s.label}
-                  </SocialLeft>
-                  <IconArrow />
-                </SocialLink>
-              ))}
-            </InfoCard>
-
-          </InfoColumn>
-        </ContentContainer>
-      </AboutPage>
-    </>
-  );
-};
 
 export default About;
