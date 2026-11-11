@@ -1,12 +1,11 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from 'framer-motion';
 import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
 import { page, scrollRoot } from './styles/motion';
 import Home from './components/Home/Home';
 import About from './components/About/About';
-import Product from './pages/Product/Product'
-import Code from './pages/Code/Code'
+import Systems from './pages/Systems/Systems';
 
 const ProgressBar = styled(motion.div)`
   position: fixed;
@@ -19,7 +18,7 @@ const ProgressBar = styled(motion.div)`
   pointer-events: none;
 `;
 
-const SECTION_COLOR = { '/product': 'var(--product)', '/code': 'var(--code)', '/about': 'var(--about)' };
+const SECTION_COLOR = { '/systems': 'var(--product)', '/about': 'var(--about)' };
 
 function App() {
   const location = useLocation();
@@ -28,13 +27,15 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <GlobalStyles />
-      <ProgressBar style={{ scaleX, background: SECTION_COLOR[location.pathname] || 'var(--accent)' }} />
+      <ProgressBar data-noprint style={{ scaleX, background: SECTION_COLOR[location.pathname] || 'var(--accent)' }} />
       <AnimatePresence mode="wait" onExitComplete={() => document.getElementById('root')?.scrollTo(0, 0)}>
         <motion.div key={location.pathname} variants={page} initial="initial" animate="animate" exit="exit">
           <Routes location={location}>
             <Route path="/" element={<Home />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/code" element={<Code />} />
+            <Route path="/systems" element={<Systems />} />
+            {/* ponytail: links viejos compartidos siguen funcionando */}
+            <Route path="/product" element={<Navigate to="/systems" replace />} />
+            <Route path="/code" element={<Navigate to="/systems" replace />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </motion.div>

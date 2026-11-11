@@ -166,9 +166,8 @@ const Hamburger = styled.button`
 /* ── component ── */
 
 const NAV_ITEMS = [
-  { to: '/product', label: 'Product', color: '#50C878', glow: 'rgba(80,200,120,0.28)',  radius: '6px 12px 6px 12px'  },
-  { to: '/code',    label: 'Code',    color: '#9B59B6', glow: 'rgba(155,89,182,0.28)', radius: '12px 6px 12px 6px' },
-  { to: '/about',   label: 'About',   color: '#F1C40F', glow: 'rgba(241,196,15,0.28)', radius: '6px 12px 6px 12px'  },
+  { to: '/systems', label: 'Systems', color: '#50C878', glow: 'rgba(80,200,120,0.28)', radius: '6px 12px 6px 12px' },
+  { to: '/about',   label: 'About · CV', color: '#F1C40F', glow: 'rgba(241,196,15,0.28)', radius: '12px 6px 12px 6px' },
 ];
 
 const Header = () => {
@@ -196,9 +195,9 @@ const Header = () => {
 
   return (
     <>
-      <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />
+      <Overlay data-noprint $open={menuOpen} onClick={() => setMenuOpen(false)} />
 
-      <HeaderContainer $scrolled={scrolled}>
+      <HeaderContainer data-noprint $scrolled={scrolled}>
         <Logo to="/">
           Jarbram<span className="dot">.</span>
         </Logo>
